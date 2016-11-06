@@ -18,4 +18,26 @@
         android:layout_height="wrap_content"
         android:text="Hello World!"
         android:id="@+id/vv_tvHello"/>
+    
+    <Button
+        android:text="Disconnect"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/vv_btnDisconnect"
+        android:visibility="gone"
+        android:layout_alignBaseline="@+id/vv_btnConnect"
+        android:layout_alignBottom="@+id/vv_btnConnect"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:text="Connect"
+        android:layout_height="wrap_content"
+        android:id="@+id/vv_btnConnect"
+        android:visibility="visible"
+        android:layout_below="@+id/vv_tvHello"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_width="110dp" />
+    
 </RelativeLayout>
