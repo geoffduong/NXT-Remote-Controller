@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     final String CV_ROBOTNAME = "NXT";
     TextView cv_tvHello;
+    private Button cv_btnConnect;
 
     // BT Variables
     private BluetoothAdapter cv_btInterface;
@@ -35,6 +36,32 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         cv_tvHello = (TextView)findViewById(R.id.vv_tvHello);
+        
+        cv_btnConnect = (Button) findViewById(R.id.vv_btnConnect);
+        cv_btnConnect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //cv_btInterface = BluetoothAdapter.getDefaultAdapter();
+                //cv_pairedDevices = cv_btInterface.getBondedDevices();
+                //Iterator<BluetoothDevice> lv_it = cv_pairedDevices.iterator();
+                ArrayList<String> lv_arr = new ArrayList<String>();
+                //while(lv_it.hasNext())
+                    //lv_arr.add(lv_it.next().getName());
+
+                ArrayAdapter lv_adapter =
+                        new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1, lv_arr);
+
+                Dialog dialog = new Dialog(MainActivity.this);
+                dialog.setContentView(R.layout.list);
+
+                ListView lv_listView = (ListView) dialog.findViewById(R.id.vv_listView);
+                lv_listView.setAdapter(lv_adapter);
+                dialog.setCancelable(true);
+                dialog.setTitle("");
+                dialog.show();
+                //cf_findRobot(view);
+            }
+        });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
