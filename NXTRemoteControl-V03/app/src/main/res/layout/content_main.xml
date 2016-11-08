@@ -16,6 +16,47 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        android:id="@+id/vv_tvHello"/>
+        android:text="NXT Device Bluetooth Connection!"
+        android:textAlignment="center"
+        android:textSize="20dp"
+        android:id="@+id/vv_tvHello"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Connect"
+        android:id="@+id/button"
+        android:layout_below="@+id/vv_tvHello"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="61dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Close"
+        android:id="@+id/button2"
+        android:layout_alignBottom="@+id/button"
+        android:layout_toRightOf="@+id/button"
+        android:layout_toEndOf="@+id/button" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:src="@drawable/bluebluetooth"
+        android:layout_alignTop="@+id/button"
+        android:layout_alignLeft="@+id/vv_tvHello"
+        android:layout_alignStart="@+id/vv_tvHello" />
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_marginRight="5dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"/>
+
+
 </RelativeLayout>
