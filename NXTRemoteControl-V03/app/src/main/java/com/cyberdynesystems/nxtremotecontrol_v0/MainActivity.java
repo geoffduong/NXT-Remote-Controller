@@ -69,6 +69,38 @@ public class MainActivity extends AppCompatActivity {
                 controller.cf_findRobot(view);
             }
         });
+        
+        /*
+         cv_btnConnect = (Button) findViewById(R.id.vv_btnConnect);
+        cv_btnConnect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cv_btInterface = BluetoothAdapter.getDefaultAdapter();
+                cv_pairedDevices = cv_btInterface.getBondedDevices();
+                final ArrayList<BluetoothDevice> lv_arr = new ArrayList<BluetoothDevice>();
+                lv_arr.addAll(cv_pairedDevices);
+
+                MyListAdapter lv_adapter = new MyListAdapter(MainActivity.this, lv_arr);
+
+                Dialog dialog = new Dialog(MainActivity.this);
+                dialog.setContentView(R.layout.list);
+
+                ListView lv_listView = (ListView) dialog.findViewById(R.id.vv_listView);
+                lv_listView.setAdapter(lv_adapter);
+
+                lv_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        cf_connectToRobot(lv_arr.get(position));
+                    }
+                });
+                dialog.setCancelable(true);
+                dialog.setTitle("");
+                dialog.show();
+                //cf_findRobot(view);
+            }
+        });
+        */
     }
 
     @Override
