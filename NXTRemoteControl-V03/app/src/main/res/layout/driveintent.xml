@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:columnCount="100"
+    android:rowCount="100">
+
+
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/vv_btnUP"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="18dp" />
+
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/vv_btnLeft"
+        android:layout_below="@+id/vv_btnUP"
+        android:layout_toLeftOf="@+id/vv_btnUP"
+        android:layout_toStartOf="@+id/vv_btnUP" />
+
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/vv_btnRight"
+        android:layout_alignTop="@+id/vv_btnLeft"
+        android:layout_toRightOf="@+id/vv_btnUP"
+        android:layout_toEndOf="@+id/vv_btnUP" />
+
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/vv_btnDown"
+        android:layout_below="@+id/vv_btnRight"
+        android:layout_toLeftOf="@+id/vv_btnRight"
+        android:layout_toStartOf="@+id/vv_btnRight" />
+
+    <SeekBar
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/vv_sbBMotor"
+        android:layout_centerVertical="true"
+        android:layout_alignLeft="@+id/vv_btnDown"
+        android:layout_alignStart="@+id/vv_btnDown"
+        android:max="100"
+        android:indeterminate="false"
+        android:progress="50" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Power Level:"
+        android:id="@+id/textView"
+        android:layout_alignTop="@+id/vv_sbBMotor"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/vv_tvBMotorPower"
+        android:layout_alignTop="@+id/textView"
+        android:layout_toRightOf="@+id/textView"
+        android:layout_toEndOf="@+id/textView" />
+
+    <ImageButton
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/vv_btnReset"
+        android:layout_alignTop="@+id/vv_btnLeft"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp" />
+
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/vv_btnForwradC"
+        android:layout_below="@+id/vv_sbBMotor"
+        android:layout_alignLeft="@+id/vv_tvBMotorPower"
+        android:layout_alignStart="@+id/vv_tvBMotorPower"
+        android:layout_marginTop="57dp" />
+
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/vv_btnBackwardC"
+        android:layout_alignTop="@+id/vv_btnForwradC"
+        android:layout_alignLeft="@+id/vv_btnRight"
+        android:layout_alignStart="@+id/vv_btnRight" />
+
+    <SeekBar
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/vv_sbPowerC"
+        android:layout_alignParentBottom="true"
+        android:layout_alignLeft="@+id/vv_btnReset"
+        android:layout_alignStart="@+id/vv_btnReset"
+        android:layout_marginBottom="57dp"
+        android:indeterminate="false"
+        android:max="100"
+        android:progress="50" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/vv_tvPowerC"
+        android:layout_alignBottom="@+id/vv_sbPowerC"
+        android:layout_alignLeft="@+id/vv_btnForwradC"
+        android:layout_alignStart="@+id/vv_btnForwradC" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Power Level:"
+        android:id="@+id/textView4"
+        android:layout_alignBottom="@+id/vv_tvPowerC"
+        android:layout_alignLeft="@+id/textView"
+        android:layout_alignStart="@+id/textView" />
+
+    <SeekBar
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/vv_sbAMotor"
+        android:layout_marginBottom="25dp"
+        android:layout_above="@+id/vv_sbBMotor"
+        android:layout_alignLeft="@+id/vv_sbBMotor"
+        android:layout_alignStart="@+id/vv_sbBMotor"
+        android:indeterminate="false"
+        android:max="100"
+        android:progress="50" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/vv_tvAMotorPower"
+        android:layout_alignBottom="@+id/vv_sbAMotor"
+        android:layout_alignLeft="@+id/vv_tvBMotorPower"
+        android:layout_alignStart="@+id/vv_tvBMotorPower" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Power Level:"
+        android:id="@+id/textView6"
+        android:layout_alignBottom="@+id/vv_tvAMotorPower"
+        android:layout_alignRight="@+id/textView"
+        android:layout_alignEnd="@+id/textView" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="A"
+        android:id="@+id/textView7"
+        android:layout_above="@+id/vv_sbAMotor"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="B"
+        android:id="@+id/textView8"
+        android:layout_above="@+id/vv_sbBMotor"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="C"
+        android:id="@+id/textView9"
+        android:layout_above="@+id/vv_sbPowerC"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>
