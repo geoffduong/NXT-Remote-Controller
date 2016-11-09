@@ -27,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Connect"
-        android:id="@+id/button"
+        android:id="@+id/connectBtn"
         android:layout_below="@+id/vv_tvHello"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="61dp" />
@@ -36,17 +36,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Close"
-        android:id="@+id/button2"
-        android:layout_alignBottom="@+id/button"
-        android:layout_toRightOf="@+id/button"
-        android:layout_toEndOf="@+id/button" />
+        android:id="@+id/closeBtn"
+        android:layout_alignBottom="@+id/connectBtn"
+        android:layout_toRightOf="@+id/connectBtn"
+        android:layout_toEndOf="@+id/connectBtn" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/imageView"
+        android:id="@+id/iv_bluetooth"
         android:src="@drawable/bluebluetooth"
-        android:layout_alignTop="@+id/button"
+        android:layout_alignTop="@+id/connectBtn"
         android:layout_alignLeft="@+id/vv_tvHello"
         android:layout_alignStart="@+id/vv_tvHello" />
 

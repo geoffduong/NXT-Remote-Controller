@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.Iterator;
@@ -20,8 +22,10 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
-    final String CV_ROBOTNAME = "NXT";
+    final String CV_ROBOTNAME = "NXT06";
     TextView cv_tvHello;
+    Button connectBtn, closeBtn;
+    ImageView bluetoothIcon;
 
     // BT Variables
     private BluetoothAdapter cv_btInterface;
@@ -35,7 +39,30 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        TextView cvTextView = (TextView) findViewById(R.id.vv_tvHello);
+        bluetoothIcon = (ImageView) findViewById(R.id.iv_bluetooth);
+        bluetoothIcon.setImageResource(R.drawable.blackbluetooth);
+
+        connectBtn.setEnabled(true);
+
+        if (connectBtn.isEnabled()) {
+            closeBtn.setEnabled(false);
+
+        } else {
+            closeBtn.setEnabled(true);
+            bluetoothIcon.setImageResource(R.drawable.bluebluetooth);
+        }
+
+
+        cv_tvHello = (TextView) findViewById(R.id.vv_tvHello);
+        connectBtn = (Button) findViewById(R.id.connectBtn);
+        closeBtn = (Button) findViewById(R.id.closeBtn);
+
+        connectBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cf_findRobot(v);
+            }
+        });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -70,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
             cv_btInterface = BluetoothAdapter.getDefaultAdapter();
             cv_pairedDevices = cv_btInterface.getBondedDevices();
             Iterator<BluetoothDevice> lv_it = cv_pairedDevices.iterator();
-            while (lv_it.hasNext())  {
+            while (lv_it.hasNext()) {
                 BluetoothDevice lv_bd = lv_it.next();
                 if (lv_bd.getName().equalsIgnoreCase(CV_ROBOTNAME)) {
                     cv_tvHello.setText(CV_ROBOTNAME + " is in paired list");
@@ -78,8 +105,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             cv_tvHello.setText(CV_ROBOTNAME + " is NOT in paired list");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             cv_tvHello.setText("Failed in findRobot() " + e.getMessage());
         }
     }
@@ -90,15 +116,14 @@ public class MainActivity extends AppCompatActivity {
             cv_btInterface = BluetoothAdapter.getDefaultAdapter();
             cv_pairedDevices = cv_btInterface.getBondedDevices();
             Iterator<BluetoothDevice> lv_it = cv_pairedDevices.iterator();
-            while (lv_it.hasNext())  {
+            while (lv_it.hasNext()) {
                 BluetoothDevice lv_bd = lv_it.next();
                 if (lv_bd.getName().equalsIgnoreCase(CV_ROBOTNAME)) {
                     cf_connectToRobot(lv_bd);
                     return;
                 }
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             cv_tvHello.setText("Failed in findRobot() " + e.getMessage());
             Log.e("", "\"Failed in findRobot() \" + e.getMessage()");
         }
@@ -106,13 +131,12 @@ public class MainActivity extends AppCompatActivity {
 
     // page 391
     private void cf_connectToRobot(BluetoothDevice bd) {
-        try  {
+        try {
             cv_socket = bd.createRfcommSocketToServiceRecord
                     (UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
             cv_socket.connect();
             cv_tvHello.setText("Connect to " + bd.getName() + " at " + bd.getAddress());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             cv_tvHello.setText("Error interacting with remote device [" +
                     e.getMessage() + "]");
             Log.e("", "\"Failed in findRobot() \" + e.getMessage()");
