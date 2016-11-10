@@ -39,7 +39,9 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //controller = new RobotController();
+        controller = new RobotController();
+        controller.cf_findRobot();
+        controller.cf_moveMotor(0, 75, 0x20);
 
         bottomBar = (BottomBar) findViewById(R.id.bottomBar);
 

@@ -47,3 +47,4 @@ public class MyListAdapter extends BaseAdapter {
         return convertView;
     }
 }
+

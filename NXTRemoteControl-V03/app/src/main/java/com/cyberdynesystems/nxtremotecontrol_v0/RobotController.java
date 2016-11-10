@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
@@ -21,7 +22,7 @@ import java.util.UUID;
  * Created by geoffduong on 11/9/16.
  */
 
-public class RobotController {
+public class RobotController implements Serializable {
 
     final String CV_ROBOTNAME = "NXT06";
 
@@ -32,16 +33,21 @@ public class RobotController {
     private BroadcastReceiver cv_btMonitor;
     private InputStream cv_is;
     private OutputStream cv_os;
+
+    public void setCv_bConnected(boolean cv_bConnected) {
+        this.cv_bConnected = cv_bConnected;
+    }
+
     private boolean cv_bConnected;
 
     public RobotController() {
-        super();
         cv_btInterface = BluetoothAdapter.getDefaultAdapter();
         cv_pairedDevices = cv_btInterface.getBondedDevices();
+        cv_bConnected = false;
     }
 
     // page 390
-    public void cf_findRobot(View v) {
+    public void cf_findRobot() {
         try {
 
             Iterator<BluetoothDevice> lv_it = cv_pairedDevices.iterator();
@@ -61,13 +67,14 @@ public class RobotController {
     // page 391
     public void cf_connectToRobot(BluetoothDevice bd) {
         try {
-            cv_socket = bd.createRfcommSocketToServiceRecord
-                    (UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
+
+
+            cv_socket = bd.createRfcommSocketToServiceRecord(bd.getUuids()[0].getUuid());
             cv_socket.connect();
             //cv_tvHello.setText("Connect to " + bd.getName() + " at " + bd.getAddress());
         } catch (Exception e) {
             //cv_tvHello.setText("Error interacting with remote device [" +
-                    //e.getMessage() + "]");
+            //e.getMessage() + "]");
             Log.e("", "\"Failed in findRobot() \" + e.getMessage()");
         }
     }
@@ -89,7 +96,7 @@ public class RobotController {
         }
     }
 
-    private void cf_setupBTMonitor () {
+    public void cf_setupBTMonitor () {
         cv_btMonitor = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -109,7 +116,7 @@ public class RobotController {
         };
     }
 
-    private void handleConnected() {
+    public void handleConnected() {
         try {
             cv_is = cv_socket.getInputStream();
             cv_os = cv_socket.getOutputStream();
@@ -135,7 +142,8 @@ public class RobotController {
         }
     }
 
-    private void cf_moveMotor(int motor,int speed, int state) {
+    public void cf_moveMotor(int motor,int speed, int state) {
+
         try {
             byte[] buffer = new byte[15];
 
@@ -159,7 +167,7 @@ public class RobotController {
             cv_os.flush();
         }
         catch (Exception e) {
-            //cv_tvHello.setText("Error in MoveForward(" + e.getMessage() + ")");
+            // cv_tvHello.setText("Error in MoveForward(" + e.getMessage() + ")");
         }
     }
 
