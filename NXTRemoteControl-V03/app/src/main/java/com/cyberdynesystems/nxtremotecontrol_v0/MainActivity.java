@@ -16,6 +16,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.BottomBarTab;
+
 import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
@@ -27,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     Button connectBtn, closeBtn;
     ImageView bluetoothIcon;
     RobotController controller;
+    BottomBar bottomBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,20 +39,25 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        controller = new RobotController();
+        //controller = new RobotController();
+
+        bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+
+        BottomBarTab driveBar = bottomBar.getTabWithId(R.id.tab_drive);
+        bottomBar.setDefaultTab(driveBar.getId());
 
         bluetoothIcon = (ImageView) findViewById(R.id.iv_bluetooth);
         bluetoothIcon.setImageResource(R.drawable.blackbluetooth);
 
-        connectBtn.setEnabled(true);
+        //connectBtn.setEnabled(true);
 
-        if (connectBtn.isEnabled()) {
-            closeBtn.setEnabled(false);
-
-        } else {
-            closeBtn.setEnabled(true);
-            bluetoothIcon.setImageResource(R.drawable.bluebluetooth);
-        }
+//        if (connectBtn.isEnabled()) {
+//            closeBtn.setEnabled(false);
+//
+//        } else {
+//            closeBtn.setEnabled(true);
+//            bluetoothIcon.setImageResource(R.drawable.bluebluetooth);
+//        }
 
 
 
@@ -59,14 +68,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 controller.cf_findRobot(v);
-            }
-        });
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                controller.cf_findRobot(view);
             }
         });
         
