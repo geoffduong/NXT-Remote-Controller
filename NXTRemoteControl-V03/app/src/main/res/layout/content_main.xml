@@ -26,27 +26,18 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Connect"
-        android:id="@+id/connectBtn"
-        android:layout_below="@+id/vv_tvHello"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="61dp" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="Close"
         android:id="@+id/closeBtn"
-        android:layout_alignBottom="@+id/connectBtn"
-        android:layout_toRightOf="@+id/connectBtn"
-        android:layout_toEndOf="@+id/connectBtn" />
+        android:layout_alignBottom="@+id/cv_connectBtn"
+        android:layout_toRightOf="@+id/cv_connectBtn"
+        android:layout_toEndOf="@+id/cv_connectBtn" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/iv_bluetooth"
         android:src="@drawable/bluebluetooth"
-        android:layout_alignTop="@+id/connectBtn"
+        android:layout_alignTop="@+id/cv_connectBtn"
         android:layout_alignLeft="@+id/vv_tvHello"
         android:layout_alignStart="@+id/vv_tvHello" />
 
@@ -57,6 +48,15 @@
         android:layout_marginRight="5dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Connect"
+        android:id="@+id/cv_connectBtn"
+        android:layout_marginTop="61dp"
+        android:layout_below="@+id/vv_tvHello"
+        android:layout_centerHorizontal="true" />
 
 
 </RelativeLayout>

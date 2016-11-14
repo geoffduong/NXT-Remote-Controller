@@ -1,33 +1,24 @@
 package com.cyberdynesystems.nxtremotecontrol_v0;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.BottomBarTab;
-
-import java.util.Iterator;
-import java.util.Set;
-import java.util.UUID;
+import com.roughike.bottombar.OnTabSelectListener;
 
 public class MainActivity extends AppCompatActivity {
 
 
 
-    Button connectBtn, closeBtn;
+    Button cv_connectBtn, closeBtn;
     ImageView bluetoothIcon;
     RobotController controller;
     BottomBar bottomBar;
@@ -39,21 +30,30 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        controller = new RobotController();
-        controller.cf_findRobot();
-        controller.cf_moveMotor(0, 75, 0x20);
-
+        //controller = RobotController.getRobotController(MainActivity.this);
         bottomBar = (BottomBar) findViewById(R.id.bottomBar);
 
-        BottomBarTab driveBar = bottomBar.getTabWithId(R.id.tab_drive);
-        bottomBar.setDefaultTab(driveBar.getId());
+        BottomBarTab connectBar = bottomBar.getTabWithId(R.id.tab_connect);
+        bottomBar.setDefaultTab(connectBar.getId());
+
+        bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
+            @Override
+            public void onTabSelected(@IdRes int tabId) {
+                if (tabId == R.id.tab_drive) {
+                    Intent lv_intent = new Intent(MainActivity.this, DriveIntent.class);
+                    startActivity(lv_intent);
+                    overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_right);
+                }
+
+            }
+        });
 
         bluetoothIcon = (ImageView) findViewById(R.id.iv_bluetooth);
         bluetoothIcon.setImageResource(R.drawable.blackbluetooth);
 
-        //connectBtn.setEnabled(true);
+        //cv_connectBtn.setEnabled(true);
 
-//        if (connectBtn.isEnabled()) {
+//        if (cv_connectBtn.isEnabled()) {
 //            closeBtn.setEnabled(false);
 //
 //        } else {
@@ -63,18 +63,20 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        connectBtn = (Button) findViewById(R.id.connectBtn);
+        cv_connectBtn = (Button) findViewById(R.id.cv_connectBtn);
         closeBtn = (Button) findViewById(R.id.closeBtn);
 
-        connectBtn.setOnClickListener(new View.OnClickListener() {
+        cv_connectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                controller.cf_findRobot(v);
+                controller.cf_findRobot();
+                Intent lv_intent = new Intent(MainActivity.this, DriveIntent.class);
+                startActivity(lv_intent);
             }
         });
         
         /*
-         cv_btnConnect = (Button) findViewById(R.id.vv_btnConnect);
+        cv_btnConnect = (Button) findViewById(R.id.vv_btnConnect);
         cv_btnConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -115,9 +117,6 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-
-            controller.cf_findBTList();
-
             return true;
         }
 
