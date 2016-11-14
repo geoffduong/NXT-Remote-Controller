@@ -34,7 +34,7 @@ public class RobotController extends Application {
     private BluetoothAdapter cv_btInterface;
     private Set<BluetoothDevice> cv_pairedDevices;
     private BluetoothSocket cv_socket;
-    private BroadcastReceiver cv_btMonitor;
+    private BroadcastReceiver cv_btMonitor = null;
     private InputStream cv_is;
     private OutputStream cv_os;
 
@@ -161,5 +161,22 @@ public class RobotController extends Application {
             // cv_tvHello.setText("Error in MoveForward(" + e.getMessage() + ")");
         }
         return null;
+    }
+
+    //Setup bluetooth monitor
+    private void setupBTMonitor()
+    {
+        cv_btMonitor = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals("android.bluetooth.device.action.ACL_CONNECTED")) {
+                    handleConnected();
+                }
+
+                if (intent.getAction().equals("android.bluetooth.device.action.ACL_DISCONNECTED")) {
+                    handleDisconnected();
+                }
+            }
+        };
     }
 }

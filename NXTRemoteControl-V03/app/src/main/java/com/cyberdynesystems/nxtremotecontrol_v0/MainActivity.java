@@ -30,7 +30,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //controller = RobotController.getRobotController(MainActivity.this);
+        controller = RobotController.getRobotController(MainActivity.this);
+
         bottomBar = (BottomBar) findViewById(R.id.bottomBar);
 
         BottomBarTab connectBar = bottomBar.getTabWithId(R.id.tab_connect);

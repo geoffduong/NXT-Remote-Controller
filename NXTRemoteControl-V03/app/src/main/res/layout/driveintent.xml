@@ -8,36 +8,40 @@
 
 
     <ImageButton
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:id="@+id/vv_btnUP"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="18dp" />
+        android:layout_marginTop="30dp"
+        android:src="@drawable/up"/>
 
     <ImageButton
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:id="@+id/vv_btnLeft"
         android:layout_below="@+id/vv_btnUP"
         android:layout_toLeftOf="@+id/vv_btnUP"
-        android:layout_toStartOf="@+id/vv_btnUP" />
+        android:layout_toStartOf="@+id/vv_btnUP"
+        android:src="@drawable/left"/>
 
     <ImageButton
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:id="@+id/vv_btnRight"
         android:layout_alignTop="@+id/vv_btnLeft"
         android:layout_toRightOf="@+id/vv_btnUP"
-        android:layout_toEndOf="@+id/vv_btnUP" />
+        android:layout_toEndOf="@+id/vv_btnUP"
+        android:src="@drawable/right"/>
 
     <ImageButton
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:id="@+id/vv_btnDown"
         android:layout_below="@+id/vv_btnRight"
         android:layout_toLeftOf="@+id/vv_btnRight"
-        android:layout_toStartOf="@+id/vv_btnRight" />
+        android:layout_toStartOf="@+id/vv_btnRight"
+        android:src="@drawable/down"/>
 
     <SeekBar
         android:layout_width="200dp"
@@ -71,29 +75,31 @@
         android:layout_toEndOf="@+id/textView" />
 
     <ImageButton
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:id="@+id/vv_btnReset"
         android:layout_alignTop="@+id/vv_btnLeft"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp" />
 
     <ImageButton
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:id="@+id/vv_btnForwradC"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/vv_btnForwardC"
         android:layout_below="@+id/vv_sbBMotor"
         android:layout_alignLeft="@+id/vv_tvBMotorPower"
         android:layout_alignStart="@+id/vv_tvBMotorPower"
-        android:layout_marginTop="57dp" />
+        android:layout_marginTop="57dp"
+        android:src="@drawable/up"/>
 
     <ImageButton
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:id="@+id/vv_btnBackwardC"
-        android:layout_alignTop="@+id/vv_btnForwradC"
+        android:layout_alignTop="@+id/vv_btnForwardC"
         android:layout_alignLeft="@+id/vv_btnRight"
-        android:layout_alignStart="@+id/vv_btnRight" />
+        android:layout_alignStart="@+id/vv_btnRight"
+        android:src="@drawable/down"/>
 
     <SeekBar
         android:layout_width="200dp"
@@ -102,7 +108,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignLeft="@+id/vv_btnReset"
         android:layout_alignStart="@+id/vv_btnReset"
-        android:layout_marginBottom="57dp"
+        android:layout_marginBottom="100dp"
         android:indeterminate="false"
         android:max="100"
         android:progress="50" />
@@ -113,8 +119,8 @@
         android:text="New Text"
         android:id="@+id/vv_tvPowerC"
         android:layout_alignBottom="@+id/vv_sbPowerC"
-        android:layout_alignLeft="@+id/vv_btnForwradC"
-        android:layout_alignStart="@+id/vv_btnForwradC" />
+        android:layout_alignLeft="@+id/vv_btnForwardC"
+        android:layout_alignStart="@+id/vv_btnForwardC" />
 
     <TextView
         android:layout_width="wrap_content"

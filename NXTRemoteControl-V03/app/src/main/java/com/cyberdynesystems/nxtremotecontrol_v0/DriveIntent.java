@@ -1,18 +1,20 @@
 package com.cyberdynesystems.nxtremotecontrol_v0;
 
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.BottomBarTab;
+import com.roughike.bottombar.OnTabSelectListener;
+
 import java.util.Stack;
 
 /**
@@ -25,6 +27,7 @@ public class DriveIntent extends AppCompatActivity implements View.OnClickListen
     SeekBar cv_sbBMotor, cv_sbPowerC, cv_sbAMotor;
     TextView cv_tvBMotorPower, cv_tvPowerC, cv_tvAMotorPower;
     RobotController cv_robotController;
+    BottomBar bottomBar;
 
     boolean[] buttonPressed = {false, false, false, false, false, false};
     /*
@@ -42,27 +45,43 @@ public class DriveIntent extends AppCompatActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.driveintent);
 
+        bottomBar = (BottomBar) findViewById(R.id.driveBottomBar);
+        BottomBarTab driveBar = bottomBar.getTabWithId(R.id.tab_drive);
+        bottomBar.setDefaultTab(driveBar.getId());
+
+        bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
+            @Override
+            public void onTabSelected(@IdRes int tabId) {
+                if (tabId == R.id.tab_connect) {
+                    Intent lv_intent = new Intent(DriveIntent.this, MainActivity.class);
+                    startActivity(lv_intent);
+                    overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_left);
+                }
+
+            }
+        });
+
         cv_robotController = RobotController.getRobotController(DriveIntent.this);
 
         cv_tvAMotorPower = (TextView) findViewById(R.id.vv_tvAMotorPower);
 
         cv_sbAMotor = (SeekBar) findViewById(R.id.vv_sbAMotor);
         cv_tvAMotorPower = (TextView) findViewById(R.id.vv_tvAMotorPower);
-        cv_tvAMotorPower.setText("" + cv_sbBMotor.getProgress());
+        //cv_tvAMotorPower.setText("" + cv_sbBMotor.getProgress());
 
         cv_sbBMotor = (SeekBar) findViewById(R.id.vv_sbBMotor);
         cv_tvBMotorPower = (TextView) findViewById(R.id.vv_tvBMotorPower);
-        cv_tvBMotorPower.setText("" + cv_sbBMotor.getProgress());
+        //cv_tvBMotorPower.setText("" + cv_sbBMotor.getProgress());
 
         cv_sbPowerC = (SeekBar) findViewById(R.id.vv_sbPowerC);
         cv_tvPowerC = (TextView) findViewById(R.id.vv_tvPowerC);
-        cv_tvPowerC.setText("" + cv_sbPowerC.getProgress());
+        //cv_tvPowerC.setText("" + cv_sbPowerC.getProgress());
         cv_btnUP = (ImageButton) findViewById(R.id.vv_btnUP);
         cv_btnDown = (ImageButton) findViewById(R.id.vv_btnDown);
         cv_btnLeft = (ImageButton) findViewById(R.id.vv_btnLeft);
         cv_btnRight = (ImageButton) findViewById(R.id.vv_btnRight);
         cv_btnReset = (ImageButton) findViewById(R.id.vv_btnReset);
-        cv_btnForwradC = (ImageButton) findViewById(R.id.vv_btnForwradC);
+        cv_btnForwradC = (ImageButton) findViewById(R.id.vv_btnForwardC);
         cv_btnBackwardC = (ImageButton) findViewById(R.id.vv_btnBackwardC);
 
         cv_btnUP.setEnabled(true);
@@ -94,6 +113,7 @@ public class DriveIntent extends AppCompatActivity implements View.OnClickListen
 
                 moveList.push(cv_robotController.cf_moveMotor(0, cv_sbAMotor.getProgress(), 0x20));
                 moveList.push(cv_robotController.cf_moveMotor(1, cv_sbBMotor.getProgress(), 0x20));
+                cv_tvAMotorPower.setText("" + cv_sbBMotor.getProgress());
                 buttonPressed[0] = true;
             } else {
                 cv_robotController.cf_moveMotor(0, 0, 0x00);
@@ -191,7 +211,7 @@ public class DriveIntent extends AppCompatActivity implements View.OnClickListen
 
 
         }
-        if (view.getId() == R.id.vv_btnForwradC) {
+        if (view.getId() == R.id.vv_btnForwardC) {
             if (!buttonPressed[4]) {
                 cv_robotController.cf_moveMotor(2, cv_sbPowerC.getProgress(), 0x20);
 
