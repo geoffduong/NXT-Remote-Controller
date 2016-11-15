@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.BottomBarTab;
@@ -20,8 +21,10 @@ public class MainActivity extends AppCompatActivity {
 
     Button cv_connectBtn, closeBtn;
     ImageView bluetoothIcon;
+    TextView cv_connectionStatus;
     RobotController controller;
     BottomBar bottomBar;
+    boolean connected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        cv_connectionStatus = (TextView) findViewById(R.id.tv_connectionStatus);
 
         controller = RobotController.getRobotController(MainActivity.this);
 
@@ -70,9 +75,19 @@ public class MainActivity extends AppCompatActivity {
         cv_connectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                controller.cf_findRobot();
-                Intent lv_intent = new Intent(MainActivity.this, DriveIntent.class);
-                startActivity(lv_intent);
+                connected = controller.cf_findRobot();
+                if (connected) {
+                    //cv_connectBtn.setEnabled(true);
+                    bluetoothIcon.setImageResource(R.drawable.bluebluetooth);
+                    cv_connectionStatus.setText("Connected");
+                }
+                else {
+                    cv_connectionStatus.setText("Connection failed");
+                }
+
+
+//                Intent lv_intent = new Intent(MainActivity.this, DriveIntent.class);
+//                startActivity(lv_intent);
             }
         });
         

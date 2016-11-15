@@ -19,7 +19,7 @@
         android:text="NXT Device Bluetooth Connection!"
         android:textAlignment="center"
         android:textSize="20dp"
-        android:id="@+id/vv_tvHello"
+        android:id="@+id/tv_connectionStatus"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
@@ -38,8 +38,8 @@
         android:id="@+id/iv_bluetooth"
         android:src="@drawable/bluebluetooth"
         android:layout_alignTop="@+id/cv_connectBtn"
-        android:layout_alignLeft="@+id/vv_tvHello"
-        android:layout_alignStart="@+id/vv_tvHello" />
+        android:layout_toLeftOf="@id/cv_connectBtn"
+        android:backgroundTint="@color/bb_darkBackgroundColor"/>
 
     <ProgressBar
         android:layout_width="wrap_content"
@@ -55,7 +55,7 @@
         android:text="Connect"
         android:id="@+id/cv_connectBtn"
         android:layout_marginTop="61dp"
-        android:layout_below="@+id/vv_tvHello"
+        android:layout_below="@+id/tv_connectionStatus"
         android:layout_centerHorizontal="true" />
 
 

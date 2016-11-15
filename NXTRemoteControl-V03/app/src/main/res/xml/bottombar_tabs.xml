@@ -3,11 +3,11 @@
     <tabs>
         <tab
             id="@+id/tab_drive"
-            icon="@drawable/ic_favorites"
+            icon="@drawable/ic_drive"
             title="Drive" />
         <tab
             id="@+id/tab_connect"
-            icon="@drawable/ic_nearby"
+            icon="@drawable/ic_connect"
             title="Connect" />
     </tabs>
 

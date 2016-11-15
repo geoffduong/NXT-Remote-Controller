@@ -58,7 +58,7 @@ public class RobotController extends Application {
     }
 
     // page 390
-    public void cf_findRobot() {
+    public boolean cf_findRobot() {
         try {
 
             Iterator<BluetoothDevice> lv_it = cv_pairedDevices.iterator();
@@ -66,13 +66,14 @@ public class RobotController extends Application {
                 BluetoothDevice lv_bd = lv_it.next();
                 if (lv_bd.getName().equalsIgnoreCase(CV_ROBOTNAME)) {
                     cf_connectToRobot(lv_bd);
-                    return;
+                    return true;
                 }
             }
         } catch (Exception e) {
             //cv_tvHello.setText("Failed in findRobot() " + e.getMessage());
             Log.e("", "\"Failed in findRobot() \" + e.getMessage()");
         }
+        return false;
     }
 
     // page 391

@@ -38,7 +38,7 @@ public class DriveIntent extends AppCompatActivity implements View.OnClickListen
     cv_btnForwradC  = buttonPressed[4]
     cv_btnBackwardC = buttonPressed[5]
      */
-    ImageButton[] cv_allButtons = {cv_btnUP,cv_btnDown,cv_btnLeft,cv_btnRight, cv_btnForwradC,cv_btnBackwardC};
+    ImageButton[] cv_allButtons;
     Stack<byte[]> moveList = new Stack<byte[]>();
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,16 +66,19 @@ public class DriveIntent extends AppCompatActivity implements View.OnClickListen
         cv_tvAMotorPower = (TextView) findViewById(R.id.vv_tvAMotorPower);
 
         cv_sbAMotor = (SeekBar) findViewById(R.id.vv_sbAMotor);
+
         cv_tvAMotorPower = (TextView) findViewById(R.id.vv_tvAMotorPower);
-        //cv_tvAMotorPower.setText("" + cv_sbBMotor.getProgress());
+        cv_tvAMotorPower.setText(Integer.toString(cv_sbAMotor.getProgress()));
 
         cv_sbBMotor = (SeekBar) findViewById(R.id.vv_sbBMotor);
+
         cv_tvBMotorPower = (TextView) findViewById(R.id.vv_tvBMotorPower);
-        //cv_tvBMotorPower.setText("" + cv_sbBMotor.getProgress());
+        cv_tvBMotorPower.setText("" + cv_sbBMotor.getProgress());
 
         cv_sbPowerC = (SeekBar) findViewById(R.id.vv_sbPowerC);
+
         cv_tvPowerC = (TextView) findViewById(R.id.vv_tvPowerC);
-        //cv_tvPowerC.setText("" + cv_sbPowerC.getProgress());
+        cv_tvPowerC.setText("" + cv_sbPowerC.getProgress());
         cv_btnUP = (ImageButton) findViewById(R.id.vv_btnUP);
         cv_btnDown = (ImageButton) findViewById(R.id.vv_btnDown);
         cv_btnLeft = (ImageButton) findViewById(R.id.vv_btnLeft);
@@ -84,16 +87,6 @@ public class DriveIntent extends AppCompatActivity implements View.OnClickListen
         cv_btnForwradC = (ImageButton) findViewById(R.id.vv_btnForwardC);
         cv_btnBackwardC = (ImageButton) findViewById(R.id.vv_btnBackwardC);
 
-        cv_btnUP.setEnabled(true);
-        cv_btnReset.setEnabled(true);
-        cv_btnDown.setEnabled(true);
-        cv_btnRight.setEnabled(true);
-        cv_btnLeft.setEnabled(true);
-        cv_btnBackwardC.setEnabled(true);
-        cv_btnForwradC.setEnabled(true);
-
-
-
         cv_btnUP.setOnClickListener(this);
         cv_btnReset.setOnClickListener(this);
         cv_btnDown.setOnClickListener(this);
@@ -101,6 +94,68 @@ public class DriveIntent extends AppCompatActivity implements View.OnClickListen
         cv_btnLeft.setOnClickListener(this);
         cv_btnBackwardC.setOnClickListener(this);
         cv_btnForwradC.setOnClickListener(this);
+
+        cv_btnUP.setEnabled(true);
+        cv_btnReset.setEnabled(true);
+        cv_btnDown.setEnabled(true);
+        cv_btnRight.setEnabled(true);
+        cv_btnLeft.setEnabled(true);
+        cv_btnBackwardC.setEnabled(true);
+        cv_btnForwradC.setEnabled(true);
+        cv_sbPowerC.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                cv_tvPowerC.setText(Integer.toString(progress));
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        cv_sbAMotor.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                cv_tvAMotorPower.setText(Integer.toString(progress));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        cv_sbBMotor.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                cv_tvBMotorPower.setText(Integer.toString(progress));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+
+        cv_allButtons = new ImageButton[]{cv_btnUP, cv_btnDown, cv_btnLeft, cv_btnRight, cv_btnForwradC, cv_btnBackwardC};
 
 
     }
@@ -118,7 +173,7 @@ public class DriveIntent extends AppCompatActivity implements View.OnClickListen
             } else {
                 cv_robotController.cf_moveMotor(0, 0, 0x00);
                 cv_robotController.cf_moveMotor(1, 0, 0x00);
-                moveList.empty();
+                moveList.clear();
                 buttonPressed[0] = false;
 
             }
@@ -130,10 +185,10 @@ public class DriveIntent extends AppCompatActivity implements View.OnClickListen
         if (view.getId() == R.id.vv_btnReset) {
             cv_robotController.cf_moveMotor(0, 0, 0x00);
             cv_robotController.cf_moveMotor(1, 0, 0x00);
-            moveList.empty();
+            moveList.clear();
             for(int i = 0 ; i < cv_allButtons.length; i++){
                 buttonPressed[i] = false;
-                cv_allButtons[i].setPressed(buttonPressed[i]);
+                //cv_allButtons[i].setPressed(buttonPressed[i]);
             }
 
 
@@ -149,10 +204,12 @@ public class DriveIntent extends AppCompatActivity implements View.OnClickListen
             } else {
                 cv_robotController.cf_moveMotor(0, 0, 0x00);
                 cv_robotController.cf_moveMotor(1, 0, 0x00);
+                moveList.clear();
                 buttonPressed[1] = false;
 
             }
             cv_btnDown.setPressed(buttonPressed[1]);
+
 
 
         }
