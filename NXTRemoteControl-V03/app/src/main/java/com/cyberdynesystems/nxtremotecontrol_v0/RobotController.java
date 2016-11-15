@@ -1,6 +1,7 @@
 package com.cyberdynesystems.nxtremotecontrol_v0;
 
 import android.app.Application;
+import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -12,11 +13,14 @@ import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
@@ -58,39 +62,50 @@ public class RobotController extends Application {
     }
 
     // page 390
-    public boolean cf_findRobot() {
+    public synchronized String cf_findRobot(Context context) {
         try {
+            final ArrayList<BluetoothDevice> lv_arr = new ArrayList<BluetoothDevice>();
+            lv_arr.addAll(cv_pairedDevices);
 
-            Iterator<BluetoothDevice> lv_it = cv_pairedDevices.iterator();
-            while (lv_it.hasNext()) {
-                BluetoothDevice lv_bd = lv_it.next();
-                if (lv_bd.getName().equalsIgnoreCase(CV_ROBOTNAME)) {
-                    cf_connectToRobot(lv_bd);
-                    return true;
+            MyListAdapter lv_adapter = new MyListAdapter(context, lv_arr);
+
+            final Dialog dialog = new Dialog(context);
+            dialog.setContentView(R.layout.list);
+
+            ListView lv_listView = (ListView) dialog.findViewById(R.id.vv_listView);
+            lv_listView.setAdapter(lv_adapter);
+
+            lv_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    cf_connectToRobot(lv_arr.get(position));
+                    handleConnected();
+                    cf_setupBTMonitor();
+                    dialog.cancel();
                 }
-            }
-        } catch (Exception e) {
-            //cv_tvHello.setText("Failed in findRobot() " + e.getMessage());
-            Log.e("", "\"Failed in findRobot() \" + e.getMessage()");
+            });
+            dialog.setCancelable(true);
+            dialog.setTitle("");
+            dialog.show();
         }
-        return false;
+        catch (Exception e) {
+            return "Failed in findRobot() " + e.getMessage();
+        }
+        return "";
     }
 
-    // page 391
-    public void cf_connectToRobot(BluetoothDevice bd) {
+    public synchronized String cf_connectToRobot(BluetoothDevice bd) {
         try {
             cv_socket = bd.createRfcommSocketToServiceRecord(bd.getUuids()[0].getUuid());
             cv_socket.connect();
-            //cv_tvHello.setText("Connect to " + bd.getName() + " at " + bd.getAddress());
-        } catch (Exception e) {
-            //cv_tvHello.setText("Error interacting with remote device [" +
-            //e.getMessage() + "]");
-            Log.e("", "\"Failed in findRobot() \" + e.getMessage()");
+            return "Connect to " + bd.getName() + " at " + bd.getAddress();
         }
-        handleConnected();
+        catch (Exception e) {
+            return "Error interacting with remote device [" + e.getMessage() + "]";
+        }
     }
 
-    public void handleConnected() {
+    public synchronized void handleConnected() {
         try {
             cv_is = cv_socket.getInputStream();
             cv_os = cv_socket.getOutputStream();
@@ -98,13 +113,14 @@ public class RobotController extends Application {
             //btnConnect.setVisibility(View.GONE);
             //btnDisconnect.setVisibility(View.VISIBLE);
         } catch (Exception e) {
+            handleDisconnected();
             cv_is = null;
             cv_os = null;
             //disconnectFromRobot(null);
         }
     }
 
-    public void handleDisconnected() {
+    public synchronized void handleDisconnected() {
         try {
             cv_socket.close();
             cv_is.close();
@@ -164,18 +180,22 @@ public class RobotController extends Application {
         return null;
     }
 
-    //Setup bluetooth monitor
-    private void setupBTMonitor()
-    {
+
+    private void cf_setupBTMonitor() {
         cv_btMonitor = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().equals("android.bluetooth.device.action.ACL_CONNECTED")) {
-                    handleConnected();
+                    try {
+                        handleConnected();
+                    }
+                    catch (Exception e) {
+                        handleDisconnected();
+                        cv_is = null;
+                        cv_os = null;
+                    }
                 }
-
                 if (intent.getAction().equals("android.bluetooth.device.action.ACL_DISCONNECTED")) {
-                    handleDisconnected();
                 }
             }
         };
