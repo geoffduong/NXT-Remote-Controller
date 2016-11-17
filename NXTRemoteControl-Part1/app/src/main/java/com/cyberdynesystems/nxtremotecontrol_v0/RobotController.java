@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -25,14 +26,12 @@ import java.util.Set;
 
 public class RobotController extends Application {
     private static RobotController singleton;
-    static Handler handler = new Handler();
     final String CV_ROBOTNAME = "NXT06";
 
     // BT Variables
     private BluetoothAdapter cv_btInterface;
     private Set<BluetoothDevice> cv_pairedDevices;
     private BluetoothSocket cv_socket;
-    private BroadcastReceiver cv_btMonitor = null;
     private InputStream cv_is;
     private OutputStream cv_os;
 
@@ -73,8 +72,6 @@ public class RobotController extends Application {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     cf_connectToRobot(lv_arr.get(position));
-                    handleConnected();
-                    cf_setupBTMonitor();
                     dialog.cancel();
                 }
             });
@@ -93,7 +90,6 @@ public class RobotController extends Application {
             cv_socket = bd.createRfcommSocketToServiceRecord(bd.getUuids()[0].getUuid());
             cv_socket.connect();
             cv_bConnected = true;
-
             return "Connect to " + bd.getName() + " at " + bd.getAddress();
         }
         catch (Exception e) {
@@ -101,22 +97,45 @@ public class RobotController extends Application {
         }
     }
 
-    public synchronized void handleConnected() {
+    //monitors the bluetooth connection
+    public synchronized BroadcastReceiver cf_getBTMonitor() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals("android.bluetooth.device.action.ACL_CONNECTED")) {
+                    try {
+                        cv_is = cv_socket.getInputStream();
+                        cv_os = cv_socket.getOutputStream();
+                        Log.d("cf_getBTMonitor", "android.bluetooth.device.action.ACL_CONNECTED");
+                    }
+                    catch (Exception e) {
+                        cf_handleDisconnected();
+                        cv_is = null;
+                        cv_os = null;
+                        Log.d("cf_getBTMonitor", e.getStackTrace().toString());
+                    }
+                }
+                if (intent.getAction().equals("android.bluetooth.device.action.ACL_DISCONNECTED")) {
+                    cf_handleDisconnected();
+                }
+            }
+        };
+    }
+
+    public synchronized void cf_handleConnected() {
         try {
             cv_is = cv_socket.getInputStream();
             cv_os = cv_socket.getOutputStream();
             cv_bConnected = true;
-            //btnConnect.setVisibility(View.GONE);
-            //btnDisconnect.setVisibility(View.VISIBLE);
-        } catch (Exception e) {
-            handleDisconnected();
+        }
+        catch (Exception e) {
+            cf_handleDisconnected();
             cv_is = null;
             cv_os = null;
-            //disconnectFromRobot(null);
         }
     }
 
-    public synchronized void handleDisconnected() {
+    public synchronized void cf_handleDisconnected() {
         try {
             cv_socket.close();
             cv_is.close();
@@ -129,7 +148,6 @@ public class RobotController extends Application {
     }
 
     public byte[] cf_moveMotor(int motor,int speed, int state) {
-
         try {
             byte[] buffer = new byte[15];
 
@@ -154,80 +172,32 @@ public class RobotController extends Application {
             return buffer;
         }
         catch (Exception e) {
-            // cv_tvHello.setText("Error in MoveForward(" + e.getMessage() + ")");
+            Log.d("cf_moveMotor1", e.getStackTrace().toString());
         }
         return null;
     }
 
     public byte[] cf_moveMotor(byte[] move) {
-
         try {
-
             cv_os.write(move);
             cv_os.flush();
             return move;
         }
         catch (Exception e) {
-            // cv_tvHello.setText("Error in MoveForward(" + e.getMessage() + ")");
+            Log.d("cf_moveMotor2", e.getStackTrace().toString());
         }
         return null;
     }
 
-    private Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-      /* do what you need to do */
-            try {cf_battery();}
-      /* and here comes the "trick" */
-            finally{ handler.postDelayed(this, 30000);}
-        }
-    };
-
-    void startRepeatingTask() {
-        runnable.run();
-    }
-
-    void stopRepeatingTask() {
-        handler.removeCallbacks(runnable);
-    }
-
-    private void cf_setupBTMonitor() {
-        cv_btMonitor = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals("android.bluetooth.device.action.ACL_CONNECTED")) {
-                    try {
-                        handleConnected();
-                        cf_battery();
-                        cv_bConnected = true;
-                        startRepeatingTask();
-                    }
-                    catch (Exception e) {
-                        handleDisconnected();
-                        cv_is = null;
-                        cv_os = null;
-                    }
-                }
-                if (intent.getAction().equals("android.bluetooth.device.action.ACL_DISCONNECTED")) {
-                }
-            }
-        };
-    }
-
     public double cf_battery() {
-
         double tempBattery;
         double battery = 9000.0;
-
         try {
             byte[] buffer = new byte[4];
-
             buffer[0] = 0x02;			//length lsb
             buffer[1] = 0x00;						// length msb
             buffer[2] =  0x00;						// direct command (with response)
             buffer[3] = 0x0b;					// set output state
-
-
 
             cv_os.write(buffer);
             cv_os.flush();
@@ -250,8 +220,6 @@ public class RobotController extends Application {
             }
 
             int[] inBuffer = new int[5];
-
-
             for (int i = 0; i < inBuffer.length; i++)
             {
                 inBuffer[i] = cv_is.read();
@@ -275,8 +243,7 @@ public class RobotController extends Application {
 
         }
         catch (Exception e) {
-            // cv_tvHello = (TextView) findViewById(R.id.vv_frag_connect_tv_status);
-            // cv_tvHello.setText("Error in MoveForward(" + e.getMessage() + ")");
+            Log.d("cf_battery", e.getStackTrace().toString());
         }
 
         tempBattery = Math.floor((battery / 9000.0) * 100);

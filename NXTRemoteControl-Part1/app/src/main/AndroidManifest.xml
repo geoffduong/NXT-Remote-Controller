@@ -24,6 +24,18 @@
         <activity
             android:name=".DriveIntent">
         </activity>
+        
+         <intent-filter>
+            <action
+                android:name="android.bluetooth.device.action.ACL_CONNECTED">
+            </action>
+        </intent-filter>
+
+        <intent-filter>
+            <action
+                android:name="android.bluetooth.device.action.ACL_DISCONNECTED">
+            </action>
+        </intent-filter>
     </application>
 
 </manifest>
