@@ -142,7 +142,7 @@ public class DriveIntent extends AppCompatActivity implements View.OnClickListen
                 cv_robotController.cf_moveMotor(1, 0, 0x00);
                 moveList.clear();
                 buttonPressed[0] = false;
-                cv_btnUP.setImageResource(R.drawable.arrow_up_green);
+                cv_btnUP.setImageResource(R.drawable.arrow_up_color);
 
             }
 
@@ -157,10 +157,10 @@ public class DriveIntent extends AppCompatActivity implements View.OnClickListen
             for(int i = 0 ; i < cv_allButtons.length; i++){
                 buttonPressed[i] = false;
             }
-            cv_btnUP.setImageResource(R.drawable.arrow_up_green);
-            cv_btnDown.setImageResource(R.drawable.arrow_down_green);
-            cv_btnLeft.setImageResource(R.drawable.arrow_left_green);
-            cv_btnRight.setImageResource(R.drawable.arrow_right_green);
+            cv_btnUP.setImageResource(R.drawable.arrow_up_color);
+            cv_btnDown.setImageResource(R.drawable.arrow_down_color);
+            cv_btnLeft.setImageResource(R.drawable.arrow_left_color);
+            cv_btnRight.setImageResource(R.drawable.arrow_right_color);
         }
 
         //Down
@@ -176,7 +176,7 @@ public class DriveIntent extends AppCompatActivity implements View.OnClickListen
                 cv_robotController.cf_moveMotor(1, 0, 0x00);
                 moveList.clear();
                 buttonPressed[1] = false;
-                cv_btnDown.setImageResource(R.drawable.arrow_down_green);
+                cv_btnDown.setImageResource(R.drawable.arrow_down_color);
             }
 
             cv_btnDown.setPressed(buttonPressed[1]);
@@ -204,7 +204,7 @@ public class DriveIntent extends AppCompatActivity implements View.OnClickListen
                 }
 
                 buttonPressed[2] = false;
-                cv_btnLeft.setImageResource(R.drawable.arrow_left_green);
+                cv_btnLeft.setImageResource(R.drawable.arrow_left_color);
             }
 
             cv_btnLeft.setPressed(buttonPressed[2]);
@@ -232,7 +232,7 @@ public class DriveIntent extends AppCompatActivity implements View.OnClickListen
                 }
 
                 buttonPressed[3] = false;
-                cv_btnRight.setImageResource(R.drawable.arrow_right_green);
+                cv_btnRight.setImageResource(R.drawable.arrow_right_color);
             }
 
             cv_btnRight.setPressed(buttonPressed[3]);
