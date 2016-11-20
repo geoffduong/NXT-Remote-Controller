@@ -14,7 +14,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
-        android:src="@drawable/up"/>
+        android:src="@drawable/arrow_up_green"/>
 
     <ImageButton
         android:layout_width="100dp"
@@ -23,7 +23,7 @@
         android:layout_below="@+id/vv_btnUP"
         android:layout_toLeftOf="@+id/vv_btnUP"
         android:layout_toStartOf="@+id/vv_btnUP"
-        android:src="@drawable/left"/>
+        android:src="@drawable/arrow_left_green"/>
 
     <ImageButton
         android:layout_width="100dp"
@@ -32,7 +32,7 @@
         android:layout_alignTop="@+id/vv_btnLeft"
         android:layout_toRightOf="@+id/vv_btnUP"
         android:layout_toEndOf="@+id/vv_btnUP"
-        android:src="@drawable/right"/>
+        android:src="@drawable/arrow_right_green"/>
 
     <ImageButton
         android:layout_width="100dp"
@@ -41,7 +41,7 @@
         android:layout_below="@+id/vv_btnRight"
         android:layout_toLeftOf="@+id/vv_btnRight"
         android:layout_toStartOf="@+id/vv_btnRight"
-        android:src="@drawable/down"/>
+        android:src="@drawable/arrow_down_green"/>
 
     <SeekBar
         android:layout_width="200dp"
@@ -90,7 +90,7 @@
         android:layout_alignLeft="@+id/vv_tvBMotorPower"
         android:layout_alignStart="@+id/vv_tvBMotorPower"
         android:layout_marginTop="57dp"
-        android:src="@drawable/up"/>
+        android:src="@drawable/arrow_up_green"/>
 
     <ImageButton
         android:layout_width="100dp"
@@ -99,7 +99,7 @@
         android:layout_alignTop="@+id/vv_btnForwardC"
         android:layout_alignLeft="@+id/vv_btnRight"
         android:layout_alignStart="@+id/vv_btnRight"
-        android:src="@drawable/down"/>
+        android:src="@drawable/arrow_down_green"/>
 
     <SeekBar
         android:layout_width="200dp"

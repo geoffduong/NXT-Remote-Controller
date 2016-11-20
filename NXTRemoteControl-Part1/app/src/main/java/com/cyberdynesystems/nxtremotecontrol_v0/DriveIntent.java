@@ -25,25 +25,22 @@ import java.util.Stack;
 
 public class DriveIntent extends AppCompatActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
 
+
+    //VARIABLES HERE-------------------------------------------------------------------------------------------
     ImageButton cv_btnUP, cv_btnDown, cv_btnLeft, cv_btnRight, cv_btnReset, cv_btnForwradC, cv_btnBackwardC;
     SeekBar cv_sbBMotor, cv_sbPowerC, cv_sbAMotor;
     TextView cv_tvBMotorPower, cv_tvPowerC, cv_tvAMotorPower;
     RobotController cv_robotController;
     BottomBar bottomBar;
     BroadcastReceiver cv_btMonitor;
-
     boolean[] buttonPressed = {false, false, false, false, false, false};
-    /*
-    cv_btnUP        = buttonPressed[0]
-    cv_btnDown      = buttonPressed[1]
-    cv_btnRight     = buttonPressed[2]
-    cv_btnLeft      = buttonPressed[3]
-    cv_btnForwradC  = buttonPressed[4]
-    cv_btnBackwardC = buttonPressed[5]
-     */
     ImageButton[] cv_allButtons;
     Stack<byte[]> moveList = new Stack<byte[]>();
+    //---------------------------------------------------------------------------------------------------------
 
+
+
+    //Default create method
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.driveintent);
@@ -129,55 +126,69 @@ public class DriveIntent extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public void onClick(View view) {
+        //A And B motor-----------------------------------------------------------------------------
+
+        //Up
         if (view.getId() == R.id.vv_btnUP) {
             if (buttonPressed[0] == false) {
                 moveList.push(cv_robotController.cf_moveMotor(0, cv_sbAMotor.getProgress(), 0x20));
                 moveList.push(cv_robotController.cf_moveMotor(1, cv_sbBMotor.getProgress(), 0x20));
                 cv_tvAMotorPower.setText("" + cv_sbBMotor.getProgress());
                 buttonPressed[0] = true;
+                cv_btnUP.setImageResource(R.drawable.arrow_up_gray);
             }
             else {
                 cv_robotController.cf_moveMotor(0, 0, 0x00);
                 cv_robotController.cf_moveMotor(1, 0, 0x00);
                 moveList.clear();
                 buttonPressed[0] = false;
+                cv_btnUP.setImageResource(R.drawable.arrow_up_green);
 
             }
 
             cv_btnUP.setPressed(buttonPressed[0]);
         }
+
+        //Reset
         if (view.getId() == R.id.vv_btnReset) {
             cv_robotController.cf_moveMotor(0, 0, 0x00);
             cv_robotController.cf_moveMotor(1, 0, 0x00);
             moveList.clear();
             for(int i = 0 ; i < cv_allButtons.length; i++){
                 buttonPressed[i] = false;
-                //cv_allButtons[i].setPressed(buttonPressed[i]);
             }
+            cv_btnUP.setImageResource(R.drawable.arrow_up_green);
+            cv_btnDown.setImageResource(R.drawable.arrow_down_green);
+            cv_btnLeft.setImageResource(R.drawable.arrow_left_green);
+            cv_btnRight.setImageResource(R.drawable.arrow_right_green);
         }
+
+        //Down
         if (view.getId() == R.id.vv_btnDown) {
             if (buttonPressed[1] == false) {
                 moveList.push(cv_robotController.cf_moveMotor(0, -cv_sbAMotor.getProgress(), 0x20));
                 moveList.push(cv_robotController.cf_moveMotor(1, -cv_sbBMotor.getProgress(), 0x20));
-
                 buttonPressed[1] = true;
+                cv_btnDown.setImageResource(R.drawable.arrow_down_gray);
             }
             else {
                 cv_robotController.cf_moveMotor(0, 0, 0x00);
                 cv_robotController.cf_moveMotor(1, 0, 0x00);
                 moveList.clear();
-
                 buttonPressed[1] = false;
+                cv_btnDown.setImageResource(R.drawable.arrow_down_green);
             }
 
             cv_btnDown.setPressed(buttonPressed[1]);
         }
+
+        //Left
         if (view.getId() == R.id.vv_btnLeft) {
             if (!buttonPressed[2]) {
                 cv_robotController.cf_moveMotor(1, 0, 0x00);
                 cv_robotController.cf_moveMotor(0, cv_sbAMotor.getProgress(), 0x20);
-
                 buttonPressed[2] = true;
+                cv_btnLeft.setImageResource(R.drawable.arrow_left_gray);
             }
             else {
                 if (!moveList.isEmpty()) {
@@ -193,16 +204,19 @@ public class DriveIntent extends AppCompatActivity implements View.OnClickListen
                 }
 
                 buttonPressed[2] = false;
+                cv_btnLeft.setImageResource(R.drawable.arrow_left_green);
             }
 
             cv_btnLeft.setPressed(buttonPressed[2]);
         }
+
+        //Right
         if (view.getId() == R.id.vv_btnRight) {
             if (!buttonPressed[3]) {
                 cv_robotController.cf_moveMotor(0, 0, 0x00);
                 cv_robotController.cf_moveMotor(1, cv_sbAMotor.getProgress(), 0x20);
-
                 buttonPressed[3] = true;
+                cv_btnRight.setImageResource(R.drawable.arrow_right_gray);
             }
             else {
                 if (!moveList.isEmpty()) {
@@ -218,10 +232,15 @@ public class DriveIntent extends AppCompatActivity implements View.OnClickListen
                 }
 
                 buttonPressed[3] = false;
+                cv_btnRight.setImageResource(R.drawable.arrow_right_green);
             }
 
             cv_btnRight.setPressed(buttonPressed[3]);
         }
+
+        //C Motor-----------------------------------------------------------------------------------
+
+        //Up
         if (view.getId() == R.id.vv_btnForwardC) {
             if (!buttonPressed[4]) {
                 cv_robotController.cf_moveMotor(2, cv_sbPowerC.getProgress(), 0x20);
@@ -236,6 +255,8 @@ public class DriveIntent extends AppCompatActivity implements View.OnClickListen
 
             cv_btnForwradC.setPressed(buttonPressed[4]);
         }
+
+        //Down
         if (view.getId() == R.id.vv_btnBackwardC) {
             if (!buttonPressed[5]) {
                 cv_robotController.cf_moveMotor(2, -cv_sbPowerC.getProgress(), 0x20);
