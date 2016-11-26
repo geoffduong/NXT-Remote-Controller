@@ -60,7 +60,7 @@ public class RobotController extends Application {
             final ArrayList<BluetoothDevice> lv_arr = new ArrayList<BluetoothDevice>();
             lv_arr.addAll(cv_pairedDevices);
 
-            MyListAdapter lv_adapter = new MyListAdapter(context, lv_arr);
+            MyListAdapter lv_adapter = new MyListAdapter(context, lv_arr, "main");
 
             final Dialog dialog = new Dialog(context);
             dialog.setContentView(R.layout.list);

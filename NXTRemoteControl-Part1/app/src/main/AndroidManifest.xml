@@ -24,6 +24,9 @@
         <activity
             android:name=".DriveIntent">
         </activity>
+        <activity
+            android:name=".PollIntent">
+        </activity>
         
          <intent-filter>
             <action

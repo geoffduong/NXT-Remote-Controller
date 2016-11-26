@@ -11,7 +11,7 @@
             title="Connect" />
         <tab
             id="@+id/tab_Poll"
-            icon="@drawable/ic_nearby"
+            icon="@drawable/ic_poll"
             title="Poll" />
         <tab
             id="@+id/tab_Servo"

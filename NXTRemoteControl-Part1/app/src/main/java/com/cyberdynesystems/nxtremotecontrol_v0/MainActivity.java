@@ -63,6 +63,12 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(lv_intent);
                     overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_right);
                 }
+
+                if (tabId == R.id.tab_Poll) {
+                    Intent lv_intent = new Intent(MainActivity.this, PollIntent.class);
+                    startActivity(lv_intent);
+                    overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_left);
+                }
             }
         });
 
