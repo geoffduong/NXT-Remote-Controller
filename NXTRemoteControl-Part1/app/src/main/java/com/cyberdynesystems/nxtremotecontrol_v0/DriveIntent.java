@@ -36,6 +36,7 @@ public class DriveIntent extends AppCompatActivity implements View.OnClickListen
     boolean[] buttonPressed = {false, false, false, false, false, false};
     ImageButton[] cv_allButtons;
     Stack<byte[]> moveList = new Stack<byte[]>();
+    RobotThread robotThread;
     //---------------------------------------------------------------------------------------------------------
 
 
@@ -63,6 +64,10 @@ public class DriveIntent extends AppCompatActivity implements View.OnClickListen
 
         cv_robotController = RobotController.getRobotController(DriveIntent.this);
         cv_btMonitor = cv_robotController.cf_getBTMonitor();
+
+        //Thread for updating battery level and connection status
+        robotThread = new RobotThread("robotThread");
+        robotThread.start();
 
         cv_tvAMotorPower = (TextView) findViewById(R.id.vv_tvAMotorPower);
 
@@ -124,6 +129,7 @@ public class DriveIntent extends AppCompatActivity implements View.OnClickListen
         cv_robotController.cf_moveMotor(0, 0, 0x00);
         cv_robotController.cf_moveMotor(1, 0, 0x00);
         unregisterReceiver(cv_btMonitor);
+        robotThread.terminate();
     }
 
     @Override
@@ -296,5 +302,48 @@ public class DriveIntent extends AppCompatActivity implements View.OnClickListen
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
 
+    }
+
+    class RobotThread implements Runnable {
+        private Thread t;
+        private String threadName;
+        private volatile boolean running;
+
+        public RobotThread(String threadName) {
+            this.threadName = threadName;
+            running = true;
+        }
+
+        public void terminate() {
+            running = false;
+        }
+
+        public void run() {
+            try {
+                while(running) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(!cv_robotController.getConnectionStatus()) {
+                                Intent lv_intent = new Intent(DriveIntent.this, MainActivity.class);
+                                startActivity(lv_intent);
+                            }
+                        }
+                    });
+                    Thread.sleep(1000);
+                }
+            }
+            catch(InterruptedException e) {
+                System.out.println(e.toString());
+                running = false;
+            }
+        }
+
+        public void start() {
+            if(t == null) {
+                t = new Thread(this, threadName);
+                t.start();
+            }
+        }
     }
 }

@@ -51,6 +51,10 @@ public class MainActivity extends AppCompatActivity {
         batteryPercent = (TextView) findViewById(R.id.tv_BatteryPercent);
         cv_batteryLevel = (ProgressBar) findViewById(R.id.batteryLevelProgess);
 
+        //Thread for updating battery level and connection status
+        robotThread = new RobotThread("robotThread");
+        robotThread.start();
+
         //Set default tab to connect
         BottomBarTab connectBar = bottomBar.getTabWithId(R.id.tab_connect);
         bottomBar.setDefaultTab(connectBar.getId());
@@ -81,11 +85,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public synchronized void onClick(View v) {
                 boolean done = cv_robotController.cf_findRobot(MainActivity.this);
-                if (done) {
-                    //Thread for updating battery level and connection status
-                    robotThread = new RobotThread("batteryThread");
-                    robotThread.start();
-                }
             }
         });
 
@@ -109,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
     public void onPause() {
         super.onPause();
         unregisterReceiver(cv_btMonitor);
+        robotThread.terminate();
     }
 
     @Override
@@ -151,14 +151,20 @@ public class MainActivity extends AppCompatActivity {
     class RobotThread implements Runnable {
         private Thread t;
         private String threadName;
+        private volatile boolean running;
 
         RobotThread(String threadName) {
             this.threadName = threadName;
+            running = true;
+        }
+
+        public void terminate() {
+            running = false;
         }
 
         public void run() {
             try {
-                while(true) {
+                while(running) {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
