@@ -26,10 +26,11 @@ public class MainActivity extends AppCompatActivity {
     TextView cv_connectionStatus, cv_deviceName;
     RobotController cv_robotController;
     BottomBar bottomBar;
-    TextView BatteryPercent;
+    TextView batteryPercent;
     ProgressBar cv_batteryLevel;
     Double batteryPercentage;
     BroadcastReceiver cv_btMonitor;
+    RobotThread robotThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         bluetoothIcon = (ImageView) findViewById(R.id.iv_bluetooth);
         cv_connectBtn = (Button) findViewById(R.id.cv_connectBtn);
         cv_closeBtn = (Button) findViewById(R.id.closeBtn);
-        BatteryPercent = (TextView) findViewById(R.id.tv_BatteryPercent);
+        batteryPercent = (TextView) findViewById(R.id.tv_BatteryPercent);
         cv_batteryLevel = (ProgressBar) findViewById(R.id.batteryLevelProgess);
 
         //Set default tab to connect
@@ -73,32 +74,18 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Check if robot is already connected
-        if (cv_robotController.getConnectionStatus()) {
-            cv_closeBtn.setEnabled(true);
-            cv_connectBtn.setEnabled(false);
-            bluetoothIcon.setImageResource(R.drawable.ic_connected_bluetooth);
-            cv_connectionStatus.setText("Connected");
-            batteryPercentage = cv_robotController.cf_battery();
-            BatteryPercent.setText(batteryPercentage + "%");
-            cv_batteryLevel.setProgress(batteryPercentage.intValue());
-            cv_deviceName.setText("Connected to: " + cv_robotController.getRobotName());
-        }
-        else {
-            cv_closeBtn.setEnabled(false);
-            cv_connectBtn.setEnabled(true);
-            bluetoothIcon.setImageResource(R.drawable.ic_disconnected_bluetooth);
-            cv_connectionStatus.setText("Not connected");
-            BatteryPercent.setText("0%");
-        }
-
+        updateConnectScreen(cv_robotController.getConnectionStatus());
 
         //Connect button listener
         cv_connectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public synchronized void onClick(View v) {
                 boolean done = cv_robotController.cf_findRobot(MainActivity.this);
-                if (done)
-                    updateConnectScreen();
+                if (done) {
+                    //Thread for updating battery level and connection status
+                    robotThread = new RobotThread("batteryThread");
+                    robotThread.start();
+                }
             }
         });
 
@@ -107,12 +94,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public synchronized void onClick(View v) {
                 cv_robotController.cf_handleDisconnected();
-                cv_connectBtn.setEnabled(true);
-                cv_closeBtn.setEnabled(false);
-                bluetoothIcon.setImageResource(R.drawable.ic_disconnected_bluetooth);
-                BatteryPercent.setText("0.0%");
-                cv_batteryLevel.setProgress(0);
-                cv_connectionStatus.setText("Not Connected");
             }
         });
     }
@@ -145,10 +126,60 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void updateConnectScreen() {
-        cv_closeBtn.setEnabled(true);
-        cv_connectBtn.setEnabled(false);
-        bluetoothIcon.setImageResource(R.drawable.ic_connected_bluetooth);
-        cv_connectionStatus.setText("Connected");
+    private void updateConnectScreen(boolean connected) {
+        if(connected) {
+            cv_closeBtn.setEnabled(true);
+            cv_connectBtn.setEnabled(false);
+            bluetoothIcon.setImageResource(R.drawable.ic_connected_bluetooth);
+            batteryPercentage = cv_robotController.cf_battery();
+            batteryPercent.setText(batteryPercentage + "%");
+            cv_batteryLevel.setProgress(batteryPercentage.intValue());
+            cv_connectionStatus.setText("Connected");
+            cv_deviceName.setText("Connected to: " + cv_robotController.getRobotName());
+        }
+        else if(!connected) {
+            cv_connectBtn.setEnabled(true);
+            cv_closeBtn.setEnabled(false);
+            bluetoothIcon.setImageResource(R.drawable.ic_disconnected_bluetooth);
+            batteryPercent.setText("0.0%");
+            cv_batteryLevel.setProgress(0);
+            cv_connectionStatus.setText("Not Connected");
+        }
+    }
+
+
+    class RobotThread implements Runnable {
+        private Thread t;
+        private String threadName;
+
+        RobotThread(String threadName) {
+            this.threadName = threadName;
+        }
+
+        public void run() {
+            try {
+                while(true) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            updateConnectScreen(cv_robotController.getConnectionStatus());
+                        }
+                    });
+                    Thread.sleep(1000);
+                }
+            }
+            catch(InterruptedException e) {
+                System.out.println(e.toString());
+            }
+        }
+
+        public void start() {
+            if(t == null) {
+                t = new Thread(this, threadName);
+                t.start();
+            }
+        }
     }
 }
+
+

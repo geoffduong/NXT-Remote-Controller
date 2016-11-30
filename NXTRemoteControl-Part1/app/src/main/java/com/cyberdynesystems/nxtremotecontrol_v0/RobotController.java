@@ -104,8 +104,7 @@ public class RobotController extends Application {
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().equals("android.bluetooth.device.action.ACL_CONNECTED")) {
                     try {
-                        cv_is = cv_socket.getInputStream();
-                        cv_os = cv_socket.getOutputStream();
+                        cf_handleConnected();
                         Log.d("cf_getBTMonitor", "android.bluetooth.device.action.ACL_CONNECTED");
                     }
                     catch (Exception e) {
@@ -117,6 +116,8 @@ public class RobotController extends Application {
                 }
                 if (intent.getAction().equals("android.bluetooth.device.action.ACL_DISCONNECTED")) {
                     cf_handleDisconnected();
+                    Log.d("cf_getBTMonitor", "android.bluetooth.device.action.ACL_DISCONNECTED");
+
                 }
             }
         };
@@ -223,7 +224,7 @@ public class RobotController extends Application {
             for (int i = 0; i < inBuffer.length; i++)
             {
                 inBuffer[i] = cv_is.read();
-                System.out.println(inBuffer[i]);
+                //System.out.println(inBuffer[i]);
             }
 
             byte array[] = new byte[2];

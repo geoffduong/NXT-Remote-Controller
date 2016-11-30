@@ -121,6 +121,8 @@ public class DriveIntent extends AppCompatActivity implements View.OnClickListen
     @Override
     public void onPause() {
         super.onPause();
+        cv_robotController.cf_moveMotor(0, 0, 0x00);
+        cv_robotController.cf_moveMotor(1, 0, 0x00);
         unregisterReceiver(cv_btMonitor);
     }
 
