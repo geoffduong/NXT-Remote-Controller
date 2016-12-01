@@ -7,7 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -17,6 +20,7 @@ public class MyListAdapter extends BaseAdapter {
     private Context c2v_context;
     private ArrayList<BluetoothDevice> c2v_listData;
     private String layout;
+    private int[] sensorImages;
 
     //CONSTRUCTORS----------------------------------------------------------------------------------
     public MyListAdapter(Context context, ArrayList<BluetoothDevice> listItems, String layout) {
@@ -25,9 +29,9 @@ public class MyListAdapter extends BaseAdapter {
         this.layout = layout;
     }
 
-    public MyListAdapter(Context context, String layout)
-    {
+    public MyListAdapter(Context context, int[] sensorImages, String layout) {
         this.c2v_context = context;
+        this.sensorImages = sensorImages;
         this.layout = layout;
     }
     //----------------------------------------------------------------------------------------------
@@ -37,7 +41,7 @@ public class MyListAdapter extends BaseAdapter {
         if (layout.equalsIgnoreCase("main"))
             return c2v_listData.size();
         if (layout.equalsIgnoreCase("poll"))
-            return 5;
+            return sensorImages.length;
         return 1;
     }
 
@@ -55,7 +59,7 @@ public class MyListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         //Layout for device list in MainActivity
-        if(convertView == null && layout.equalsIgnoreCase("main")) {
+        if (convertView == null && layout.equalsIgnoreCase("main")) {
             LayoutInflater mInflater =
                     (LayoutInflater) c2v_context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
             convertView = mInflater.inflate(R.layout.cell, null);
@@ -64,10 +68,28 @@ public class MyListAdapter extends BaseAdapter {
         }
 
         //Layout for Poll Intent
-        if(convertView == null && layout.equalsIgnoreCase("poll")) {
+        if (convertView == null && layout.equalsIgnoreCase("poll")) {
             LayoutInflater mInflater =
                     (LayoutInflater) c2v_context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
             convertView = mInflater.inflate(R.layout.poll_listcell, null);
+            ImageView lv_sensorImage = (ImageView) convertView.findViewById(R.id.poll_listcell_image);
+            TextView lv_sensorIndex = (TextView) convertView.findViewById(R.id.poll_listcell_index);
+            lv_sensorImage.setImageResource(sensorImages[position]);
+            //If position is at motor image
+            if (position >= 4) {
+                char index = (char) (position + 61);
+                lv_sensorIndex.setText(Character.toString(index));
+            } else
+                lv_sensorIndex.setText(Integer.toString(position + 1));
+        }
+
+        //Layout for Changing sensor
+        if (convertView == null && layout.equalsIgnoreCase("sensorChange")) {
+            LayoutInflater mInflater =
+                    (LayoutInflater) c2v_context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+            convertView = mInflater.inflate(R.layout.cell, null);
+            TextView lv_tvList = (TextView) convertView.findViewById(R.id.vv_tvList);
+            lv_tvList.setText(c2v_listData.get(position).getName().toString());
         }
 
         return convertView;

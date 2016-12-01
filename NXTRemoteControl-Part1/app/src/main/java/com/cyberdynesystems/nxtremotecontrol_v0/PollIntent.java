@@ -1,15 +1,20 @@
 package com.cyberdynesystems.nxtremotecontrol_v0;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.BottomBarTab;
 import com.roughike.bottombar.OnTabSelectListener;
+
+import java.util.ArrayList;
 
 /**
  * Created by geoffduong on 11/21/16.
@@ -18,7 +23,6 @@ import com.roughike.bottombar.OnTabSelectListener;
 public class PollIntent extends AppCompatActivity {
 
     //Global variables------------------------------------------------------------------------------
-    ListView lv_poll;
     BottomBar bottomBar;
     MyListAdapter lv_adapter;
     ListView lv_pollList;
@@ -30,8 +34,10 @@ public class PollIntent extends AppCompatActivity {
         setContentView(R.layout.poll_intent);
 
         //Initalize variables
-        lv_poll = (ListView) findViewById(R.id.poll_listView);
         bottomBar = (BottomBar) findViewById(R.id.pollBottomBar);
+        int[] sensorImages = {R.drawable.nxt_distance_120,R.drawable.nxt_light_120,R.drawable.nxt_touch_120,
+                              R.drawable.nxt_sound_120,R.drawable.nxt_servo_120,R.drawable.nxt_servo_120,
+                              R.drawable.nxt_servo_120};
 
         //Set default tab
         BottomBarTab pollTab = bottomBar.getTabWithId(R.id.tab_Poll);
@@ -49,11 +55,33 @@ public class PollIntent extends AppCompatActivity {
             }
         });
 
-
-        lv_adapter = new MyListAdapter(this, "poll");
+        lv_adapter = new MyListAdapter(this, sensorImages, "poll");
 
         lv_pollList = (ListView) findViewById(R.id.poll_listView);
 
         lv_pollList.setAdapter(lv_adapter);
+
+        lv_pollList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (position >= 0 && position <= 3) {
+                    final Dialog dialog = new Dialog(getApplicationContext());
+                    dialog.setContentView(R.layout.list);
+
+                    ListView lv_listView = (ListView) dialog.findViewById(R.id.vv_listView);
+                    lv_listView.setAdapter(lv_adapter);
+
+                    lv_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            dialog.cancel();
+                        }
+                    });
+                    dialog.setCancelable(true);
+                    dialog.setTitle("");
+                    dialog.show();
+                }
+            }
+        });
     }
 }
