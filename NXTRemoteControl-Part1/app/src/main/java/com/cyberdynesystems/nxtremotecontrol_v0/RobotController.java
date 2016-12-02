@@ -250,6 +250,58 @@ public class RobotController extends Application {
         return tempBattery;
     }
 
+    public void cf_sensor() {
+        try {
+            byte[] buffer = new byte[7];
+            buffer[0] = (byte) (7-2);	// length lsb
+            buffer[1] = 0x00;			// length msb
+            buffer[2] =  0x00;			// direct command (with response)
+            buffer[3] = 0x05;		    // set input mode
+            buffer[4] = 0x00;           // input port
+            buffer[5] = 0x00;           // sensor type(enumerated)
+            buffer[6] = 0x00;           // sensor mode(enumerated)
+
+            /*
+            return package
+            byte 0: 0x02
+            byte 1: 0x05
+            byte 2: status byte
+             */
+        }
+        catch(Exception e) {
+            Log.d("cf_setSensor", e.getStackTrace().toString());
+        }
+    }
+
+    public void cf_getSensorValues() {
+        try {
+            byte[] buffer = new byte[5];
+
+            buffer[0] = (byte) (5-2);	// length lsb
+            buffer[1] = 0x00;			// length msb
+            buffer[2] =  0x00;			// direct command (with response)
+            buffer[3] = 0x07;			// get output state
+            buffer[4] = 0x00;            // output port
+
+            /*
+            return package
+            byte 0: 0x02
+            byte 1: 0x07
+            byte 2: status byte
+            byte 3: input port
+            byte 4: valid? boolean true if valid data
+            byte 5: calibrated?
+            byte 6: sensor type
+            byte 7: sensort mode
+            byte 8: run state
+            byte 9:
+             */
+        }
+        catch(Exception e) {
+            Log.d("cf_getSensorState", e.getStackTrace().toString());
+        }
+    }
+
     public boolean getConnectionStatus()
     {
         return cv_bConnected;
