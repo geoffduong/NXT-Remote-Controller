@@ -244,16 +244,19 @@ public class RobotController extends Application {
         return tempBattery;
     }
 
+    //sets the sensor to be polled
+    //int sensorType: see below for values for valid sensor types
+    //int inputPort: 0x00-0x03 depending on which port the sensor is connected to
     public void cf_setInputMode(int sensorType, int inputPort) {
         try {
             byte[] buffer = new byte[7];
-            buffer[0] = 0x05;	        // length lsb
-            buffer[1] = 0x00;			// length msb
-            buffer[2] = (byte) 0x80;	// direct command (without response)
-            buffer[3] = 0x05;		    // set input mode
-            buffer[4] = 0x02;           // input port 0x00-0x03
-            buffer[5] = 0x05;           // sensor type(enumerated)
-            buffer[6] = (byte) 0x80;    // sensor mode(enumerated) PCTFULLSCALEMODE
+            buffer[0] = 0x05;	            // length lsb
+            buffer[1] = 0x00;			    // length msb
+            buffer[2] = (byte) 0x80;	    // direct command (without response)
+            buffer[3] = 0x05;		        // set input mode
+            buffer[4] = (byte)inputPort;    // input port 0x00-0x03
+            buffer[5] = (byte)sensorType;   // sensor type(enumerated)
+            buffer[6] = (byte) 0x80;        // sensor mode(enumerated) PCTFULLSCALEMODE
 
             cv_os.write(buffer);
             cv_os.flush();
@@ -301,7 +304,9 @@ public class RobotController extends Application {
         }
     }
 
-    public int cf_getInputValues(int outputPort) {
+    //polls a currently active sensor and returns an integer value
+    //int inputPort: 0x00-0x03 depending on which port the sensor is connected to
+    public int cf_getInputValues(int inputPort) {
         try {
             byte[] buffer = new byte[5];
 
@@ -309,7 +314,7 @@ public class RobotController extends Application {
             buffer[1] = 0x00;			// length msb
             buffer[2] =  0x00;			// direct command (with response)
             buffer[3] = 0x07;			// get output state
-            buffer[4] = 0x02;           // output port
+            buffer[4] = (byte)inputPort;           // output port
 
             cv_os.write(buffer);
             cv_os.flush();
