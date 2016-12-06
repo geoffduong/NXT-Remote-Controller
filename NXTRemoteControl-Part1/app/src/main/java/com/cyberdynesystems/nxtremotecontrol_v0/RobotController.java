@@ -205,25 +205,22 @@ public class RobotController extends Application {
             boolean flag1 = false;
             boolean flag2 = false;
 
-            while (flag1 == false || flag2 == false)
-            {
+            while (flag1 == false || flag2 == false) {
                 cv_is = cv_socket.getInputStream();
                 int test = cv_is.read();
                 if (test == 5) {
                     flag1 = true;
                 }
-                if (flag1 == true && test == 0)
-                {
+                if (flag1 == true && test == 0) {
                     flag2 = true;
                     break;
                 }
             }
 
             int[] inBuffer = new int[5];
-            for (int i = 0; i < inBuffer.length; i++)
-            {
+            for (int i = 0; i < inBuffer.length; i++) {
                 inBuffer[i] = cv_is.read();
-                System.out.println(inBuffer[i]);
+                //System.out.println(inBuffer[i]);
             }
 
             byte array[] = new byte[2];
@@ -231,16 +228,13 @@ public class RobotController extends Application {
             array[1] = (byte) inBuffer[4];
             int nValue = array[0] + (array[1] << 8);
 
-  //          double newBattery = ((double)inBuffer[3] * (double)inBuffer[4]) / 9000.0;
-
-//            if (nValue <= battery) {
+            //double newBattery = ((double)inBuffer[3] * (double)inBuffer[4]) / 9000.0;
+            //if (nValue <= battery) {
                 battery =  nValue;
-//            }
+            //}
 
-//            SeekBar cv_skbBattery = (SeekBar) findViewById(R.id.BatteryseekBar);
-
-//            cv_skbBattery.setProgress((int) tempBatt);
-
+            //SeekBar cv_skbBattery = (SeekBar) findViewById(R.id.BatteryseekBar);
+            //cv_skbBattery.setProgress((int) tempBatt);
         }
         catch (Exception e) {
             Log.d("cf_battery", e.getStackTrace().toString());
@@ -250,16 +244,50 @@ public class RobotController extends Application {
         return tempBattery;
     }
 
-    public void cf_sensor() {
+    public void cf_setInputMode(int sensorType, int inputPort) {
         try {
             byte[] buffer = new byte[7];
-            buffer[0] = (byte) (7-2);	// length lsb
+            buffer[0] = 0x05;	        // length lsb
             buffer[1] = 0x00;			// length msb
-            buffer[2] =  0x00;			// direct command (with response)
+            buffer[2] = (byte) 0x80;	// direct command (without response)
             buffer[3] = 0x05;		    // set input mode
-            buffer[4] = 0x00;           // input port
-            buffer[5] = 0x00;           // sensor type(enumerated)
-            buffer[6] = 0x00;           // sensor mode(enumerated)
+            buffer[4] = 0x02;           // input port 0x00-0x03
+            buffer[5] = 0x05;           // sensor type(enumerated)
+            buffer[6] = (byte) 0x80;    // sensor mode(enumerated) PCTFULLSCALEMODE
+
+            cv_os.write(buffer);
+            cv_os.flush();
+
+            /*
+            sensor type
+            NO_SENSOR: 0x00
+            SWITCH: 0x01 <--- TOUCH
+            TEMPERATURE: 0x02
+            REFLECTION: 0x03
+            ANGLE: 0x04
+            LIGHT_ACTIVE: 0x05
+            LIGHT_INACTIVE: 0x06
+            SOUND_DB: 0x07
+            SOUND_DBA: 0x08
+            CUSTOM: 0x09
+            LOWSPEED: 0x0A
+            LOWSPEED_9V: 0x0B
+            NO_OF_SENSOR_TYPES: 0x0C
+             */
+
+            /*
+            sensor mode
+            RAWMODE: 0x00
+            BOOLEANMODE: 0x20
+            TRANSITIONCNTMODE: 0x40
+            PERIODCOUNTERMODE: 0x60
+            PCTFULLSCALEMODE: 0x80
+            CELSIUSMODE: 0xA0
+            FAHRENHEITMODE: 0xC0
+            ANGLESTEPMODE: 0xE0
+            SLOPEMASK: 0x1F
+            MODEMASK: 0xE0
+             */
 
             /*
             return package
@@ -273,7 +301,7 @@ public class RobotController extends Application {
         }
     }
 
-    public void cf_getSensorValues() {
+    public int cf_getInputValues(int outputPort) {
         try {
             byte[] buffer = new byte[5];
 
@@ -281,8 +309,19 @@ public class RobotController extends Application {
             buffer[1] = 0x00;			// length msb
             buffer[2] =  0x00;			// direct command (with response)
             buffer[3] = 0x07;			// get output state
-            buffer[4] = 0x00;            // output port
+            buffer[4] = 0x02;           // output port
 
+            cv_os.write(buffer);
+            cv_os.flush();
+
+            int[] inBuffer = new int[16];
+            for (int i = 0; i < inBuffer.length; i++) {
+                inBuffer[i] = cv_is.read();
+                System.out.println(inBuffer[i]);
+            }
+
+            //index 12 should contain the value we want
+            return inBuffer[12];
             /*
             return package
             byte 0: 0x02
@@ -292,14 +331,17 @@ public class RobotController extends Application {
             byte 4: valid? boolean true if valid data
             byte 5: calibrated?
             byte 6: sensor type
-            byte 7: sensort mode
-            byte 8: run state
-            byte 9:
+            byte 7: sensor mode
+            byte 8-9: raw a/d value
+            byte 10-11: normalized a/d value
+            byte 12-13: scaled value <-- values we want for display
+            byte 14-15: calibrated value
              */
         }
         catch(Exception e) {
             Log.d("cf_getSensorState", e.getStackTrace().toString());
         }
+        return 0;
     }
 
     public boolean getConnectionStatus()
