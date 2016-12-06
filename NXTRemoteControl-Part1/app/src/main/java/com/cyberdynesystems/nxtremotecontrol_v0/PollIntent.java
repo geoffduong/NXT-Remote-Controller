@@ -23,6 +23,8 @@ import java.util.ArrayList;
 public class PollIntent extends AppCompatActivity {
 
     //Global variables------------------------------------------------------------------------------
+    RobotController cv_robotController;
+    BroadcastReceiver cv_btMonitor;
     BottomBar bottomBar;
     MyListAdapter lv_adapter;
     ListView lv_pollList;
@@ -32,6 +34,9 @@ public class PollIntent extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.poll_intent);
+        
+        cv_robotController = RobotController.getRobotController(PollIntent.this);
+        cv_btMonitor = cv_robotController.cf_getBTMonitor();
 
         //Initalize variables
         bottomBar = (BottomBar) findViewById(R.id.pollBottomBar);
@@ -83,5 +88,68 @@ public class PollIntent extends AppCompatActivity {
                 }
             }
         });
+    }
+    
+    @Override
+    public void onResume() {
+        super.onResume();
+        registerReceiver(cv_btMonitor, new IntentFilter("android.bluetooth.device.action.ACL_CONNECTED"));
+        registerReceiver(cv_btMonitor, new IntentFilter("android.bluetooth.device.action.ACL_DISCONNECTED"));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        unregisterReceiver(cv_btMonitor);
+        //robotThread.terminate();
+    }
+
+    class RobotThread implements Runnable {
+        private Thread t;
+        private String threadName;
+        private volatile boolean running;
+
+        public RobotThread(String threadName) {
+            this.threadName = threadName;
+            running = true;
+        }
+
+        public void terminate() {
+            running = false;
+        }
+
+        public void run() {
+            try {
+                while(running) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(!cv_robotController.getConnectionStatus()) {
+                                Intent lv_intent = new Intent(PollIntent.this, MainActivity.class);
+                                startActivity(lv_intent);
+                            }
+                            else if(cv_robotController.getConnectionStatus()) {
+                                cv_robotController.cf_getInputValues(0x00);
+                                cv_robotController.cf_getInputValues(0x01);
+                                cv_robotController.cf_getInputValues(0x02);
+                                cv_robotController.cf_getInputValues(0x03);
+                            }
+                        }
+                    });
+                    Thread.sleep(5000);
+                }
+            }
+            catch(InterruptedException e) {
+                System.out.println(e.toString());
+                running = false;
+            }
+        }
+
+        public void start() {
+            if(t == null) {
+                t = new Thread(this, threadName);
+                t.start();
+            }
+        }
     }
 }
