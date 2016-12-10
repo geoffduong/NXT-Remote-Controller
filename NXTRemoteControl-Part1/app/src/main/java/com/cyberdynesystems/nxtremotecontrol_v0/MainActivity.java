@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
                     overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_left);
                 }
 
-                if (tabId == R.id.tab_Servo) {
+                if (tabId == R.id.tab_driveByDraw) {
                     Intent lv_intent = new Intent(MainActivity.this, GridDriveIntent.class);
                     startActivity(lv_intent);
                     overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_left);

@@ -14,9 +14,9 @@
             icon="@drawable/ic_poll"
             title="Poll" />
         <tab
-            id="@+id/tab_Servo"
-            icon="@drawable/ic_nearby"
-            title="Servo" />
+            id="@+id/tab_driveByDraw"
+            icon="@drawable/ic_content_gesture"
+            title="Draw" />
     </tabs>
 
 

@@ -1,6 +1,7 @@
 package com.cyberdynesystems.nxtremotecontrol_v0;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -10,6 +11,7 @@ import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -19,6 +21,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.BottomBarTab;
+import com.roughike.bottombar.OnTabSelectListener;
 
 import java.util.ArrayList;
 
@@ -38,6 +44,8 @@ public class GridDriveIntent extends AppCompatActivity {
     Button cv_btnPlayMovment;
     RobotController cv_RobotController;
 
+    BottomBar bottomBar;
+
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -50,6 +58,29 @@ public class GridDriveIntent extends AppCompatActivity {
 
         points = new ArrayList<>();
         cv_btnPlayMovment = (Button) findViewById(R.id.vv_btnGridMovement);
+
+        bottomBar = (BottomBar) findViewById(R.id.driveByDrawBottomBar);
+
+        //Set default tab
+        BottomBarTab driveByDrawTab = bottomBar.getTabWithId(R.id.tab_driveByDraw);
+        bottomBar.setDefaultTab(driveByDrawTab.getId());
+
+        //Bottom bar listener
+        bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
+            @Override
+            public void onTabSelected(@IdRes int tabId) {
+                if (tabId == R.id.tab_connect) {
+                    Intent lv_intent = new Intent(GridDriveIntent.this, MainActivity.class);
+                    startActivity(lv_intent);
+                    overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_right);
+                }
+                if (tabId == R.id.tab_Poll) {
+                    Intent lv_intent = new Intent(GridDriveIntent.this, PollIntent.class);
+                    startActivity(lv_intent);
+                    overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_right);
+                }
+            }
+        });
         cv_btnPlayMovment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

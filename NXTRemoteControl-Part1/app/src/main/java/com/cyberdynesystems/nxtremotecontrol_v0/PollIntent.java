@@ -1,7 +1,9 @@
 package com.cyberdynesystems.nxtremotecontrol_v0;
 
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
@@ -54,6 +56,16 @@ public class PollIntent extends AppCompatActivity {
             public void onTabSelected(@IdRes int tabId) {
                 if (tabId == R.id.tab_connect) {
                     Intent lv_intent = new Intent(PollIntent.this, MainActivity.class);
+                    startActivity(lv_intent);
+                    overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_right);
+                }
+                if (tabId == R.id.tab_driveByDraw) {
+                    Intent lv_intent = new Intent(PollIntent.this, GridDriveIntent.class);
+                    startActivity(lv_intent);
+                    overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_left);
+                }
+                if (tabId == R.id.tab_drive) {
+                    Intent lv_intent = new Intent(PollIntent.this, DriveIntent.class);
                     startActivity(lv_intent);
                     overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_right);
                 }
