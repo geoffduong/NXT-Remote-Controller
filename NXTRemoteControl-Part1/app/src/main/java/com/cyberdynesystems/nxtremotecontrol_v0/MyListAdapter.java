@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MyListAdapter extends BaseAdapter {
@@ -65,6 +66,8 @@ public class MyListAdapter extends BaseAdapter {
             convertView = mInflater.inflate(R.layout.cell, null);
             TextView lv_tvList = (TextView) convertView.findViewById(R.id.vv_tvList);
             lv_tvList.setText(c2v_listData.get(position).getName().toString());
+            TextView lv_tvAddress = (TextView) convertView.findViewById(R.id.vv_tvList);
+            lv_tvAddress.setText(c2v_listData.get(position).getAddress().toString());
         }
 
         //Layout for Poll Intent
@@ -79,7 +82,8 @@ public class MyListAdapter extends BaseAdapter {
             if (position >= 4) {
                 char index = (char) (position + 61);
                 lv_sensorIndex.setText(Character.toString(index));
-            } else
+            }
+            else
                 lv_sensorIndex.setText(Integer.toString(position + 1));
         }
 
@@ -89,7 +93,9 @@ public class MyListAdapter extends BaseAdapter {
                     (LayoutInflater) c2v_context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
             convertView = mInflater.inflate(R.layout.cell, null);
             TextView lv_tvList = (TextView) convertView.findViewById(R.id.vv_tvList);
-            lv_tvList.setText(c2v_listData.get(position).getName().toString());
+            lv_tvList.setText(sensorImages[position]);
+                    //
+            // c2v_listData.get(position).getName().toString());
         }
 
         return convertView;
