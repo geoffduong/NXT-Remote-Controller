@@ -325,11 +325,9 @@ public class RobotController extends Application {
             int[] inBuffer = new int[18];
             for (int i = 0; i < inBuffer.length; i++) {
                 inBuffer[i] = cv_is.read();
-                System.out.println(inBuffer[i]);
             }
 
             //index 14 should contain the value we want
-            System.out.println(inBuffer[14]);
             return inBuffer[14];
             /*
             return package
@@ -349,6 +347,33 @@ public class RobotController extends Application {
         }
         catch(Exception e) {
             Log.d("cf_getSensorState", e.getStackTrace().toString());
+        }
+        return 0;
+    }
+
+    public int cf_getOutputValues(int outputPort) {
+        try {
+            byte[] buffer = new byte[5];
+
+            buffer[0] = 0x03;	// length lsb
+            buffer[1] = 0x00;			// length msb
+            buffer[2] =  0x00;			// direct command (with response)
+            buffer[3] = 0x06;			// get output state
+            buffer[4] = (byte)outputPort;   // input port
+
+            cv_os.write(buffer);
+            cv_os.flush();
+
+            int[] inBuffer = new int[27];
+            for (int i = 0; i < inBuffer.length; i++) {
+                inBuffer[i] = cv_is.read();
+                System.out.println(inBuffer[i]);
+            }
+
+            return (inBuffer[19] + inBuffer[20] + inBuffer[21] + inBuffer[22]);
+        }
+        catch(Exception e) {
+
         }
         return 0;
     }

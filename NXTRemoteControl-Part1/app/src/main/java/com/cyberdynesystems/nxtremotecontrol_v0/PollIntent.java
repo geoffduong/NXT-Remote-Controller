@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 
 import com.roughike.bottombar.BottomBar;
@@ -78,15 +79,14 @@ public class PollIntent extends AppCompatActivity {
 
         cv_pollData = new ArrayList<>();
         for(int i=0; i<sensorImages.length; i++)
-            cv_pollData.add(new MyPollData(sensorImages[i], true));
+            cv_pollData.add(new MyPollData(sensorImages[i], false));
 
         cv_pollAdapter = new MyPollListAdapter(this, cv_pollData);
         //lv_adapter = new MyListAdapter(this, sensorImages, "poll");
         cv_pollList = (ListView) findViewById(R.id.poll_listView);
         cv_pollList.setAdapter(cv_pollAdapter);
 
-        /*
-        lv_pollList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        cv_pollList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position >= 0 && position <= 3) {
@@ -98,7 +98,6 @@ public class PollIntent extends AppCompatActivity {
 
                         ListView lv_listView = (ListView) dialog.findViewById(R.id.vv_listView);
                         lv_listView.setAdapter(lv_adapter);
-
 
                         lv_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
@@ -116,7 +115,7 @@ public class PollIntent extends AppCompatActivity {
                 }
             }
         });
-        */
+
 
         //cv_robotController.cf_setInputMode();
         cv_robotController.cf_setInputMode(0x07, 0x01);
@@ -172,7 +171,7 @@ public class PollIntent extends AppCompatActivity {
                                 startActivity(lv_intent);
                             }
                             else if(cv_robotController.getConnectionStatus()) {
-                                for(int i=0; i<4; i++) {
+                                for(int i=0; i<sensorImages.length; i++) {
                                     MyPollData lv_mpd = cv_pollData.get(i);
                                     if(lv_mpd.getActive() == true) {
                                         switch (lv_mpd.getSensorImage()) {
@@ -187,6 +186,9 @@ public class PollIntent extends AppCompatActivity {
                                                 break;
                                             case R.drawable.nxt_touch_120:
                                                 lv_mpd.setValue(cv_robotController.cf_getInputValues(0x03));
+                                                break;
+                                            case R.drawable.nxt_servo_120:
+                                                lv_mpd.setValue(cv_robotController.cf_getOutputValues(i-4));
                                                 break;
                                             default:
                                                 break;
