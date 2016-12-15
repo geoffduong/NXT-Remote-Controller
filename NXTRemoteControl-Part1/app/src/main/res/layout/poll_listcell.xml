@@ -35,7 +35,8 @@
         android:layout_alignBottom="@+id/poll_listcell_index"
         android:layout_toRightOf="@+id/poll_listcell_image"
         android:textSize="24dp"
-        android:switchPadding="10dp" />
+        android:switchPadding="10dp"
+        android:focusable="false"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

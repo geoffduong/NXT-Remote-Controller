@@ -7,5 +7,17 @@
         android:id="@+id/vv_listView"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="  Select NXT Device                                       "
+        android:id="@+id/dialogHeader"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="@color/Blue"
+        android:textColor="@color/White"
+        android:textSize="30dp"/>
 
 </LinearLayout>
