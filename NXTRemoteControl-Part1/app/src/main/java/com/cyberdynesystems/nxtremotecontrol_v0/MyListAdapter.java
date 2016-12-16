@@ -82,20 +82,19 @@ public class MyListAdapter extends BaseAdapter {
             if (position >= 4) {
                 char index = (char) (position + 61);
                 lv_sensorIndex.setText(Character.toString(index));
-            }
-            else
+            } else
                 lv_sensorIndex.setText(Integer.toString(position + 1));
         }
 
         //Layout for Changing sensor
         if (convertView == null && layout.equalsIgnoreCase("sensorChange")) {
-                LayoutInflater mInflater =
-                        (LayoutInflater) c2v_context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-                convertView = mInflater.inflate(R.layout.cell, null);
-                TextView lv_tvList = (TextView) convertView.findViewById(R.id.vv_tvList);
-                ImageView lv_sensorImage = (ImageView) convertView.findViewById(R.id.dialogPicture);
+            LayoutInflater mInflater =
+                    (LayoutInflater) c2v_context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+            convertView = mInflater.inflate(R.layout.cell, null);
+            TextView lv_tvList = (TextView) convertView.findViewById(R.id.vv_tvList);
+            ImageView lv_sensorImage = (ImageView) convertView.findViewById(R.id.dialogPicture);
 
-                lv_sensorImage.setImageResource(sensorImages[position]);
+            lv_sensorImage.setImageResource(sensorImages[position]);
             switch (position) {
                 case 0:
                     lv_tvList.setText("Distance Sensor");
@@ -110,9 +109,7 @@ public class MyListAdapter extends BaseAdapter {
                     lv_tvList.setText("Sound Sensor");
                     break;
             }
-
-            }
-
+        }
         return convertView;
     }
 }

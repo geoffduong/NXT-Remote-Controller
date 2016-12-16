@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -85,13 +84,12 @@ public class PollIntent extends AppCompatActivity {
 
         cv_pollData = new ArrayList<>();
         for(int i=0; i<sensorImages.length; i++)
-            cv_pollData.add(new MyPollData(sensorImages[i], true));
+            cv_pollData.add(new MyPollData(sensorImages[i], false));
 
         cv_pollAdapter = new MyPollListAdapter(this, cv_pollData);
         //lv_adapter = new MyListAdapter(this, sensorImages, "poll");
         cv_pollList = (ListView) findViewById(R.id.poll_listView);
         cv_pollList.setAdapter(cv_pollAdapter);
-
 
         cv_pollList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -180,7 +178,7 @@ public class PollIntent extends AppCompatActivity {
                                 startActivity(lv_intent);
                             }
                             else if(cv_robotController.getConnectionStatus()) {
-                                for(int i=0; i<4; i++) {
+                                for(int i=0; i<sensorImages.length; i++) {
                                     MyPollData lv_mpd = cv_pollData.get(i);
                                     if(lv_mpd.getActive() == true) {
                                         switch (lv_mpd.getSensorImage()) {
@@ -195,6 +193,9 @@ public class PollIntent extends AppCompatActivity {
                                                 break;
                                             case R.drawable.nxt_touch_120:
                                                 lv_mpd.setValue(cv_robotController.cf_getInputValues(0x03));
+                                                break;
+                                            case R.drawable.nxt_servo_120:
+                                                lv_mpd.setValue(cv_robotController.cf_getOutputValues(i-4));
                                                 break;
                                             default:
                                                 break;
