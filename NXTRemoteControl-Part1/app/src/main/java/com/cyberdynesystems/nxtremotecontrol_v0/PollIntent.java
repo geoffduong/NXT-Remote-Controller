@@ -175,11 +175,11 @@ public class PollIntent extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-//                            if(!cv_robotController.getConnectionStatus()) {
-//                                Intent lv_intent = new Intent(PollIntent.this, MainActivity.class);
-//                                startActivity(lv_intent);
-//                            }
-//                            else if(cv_robotController.getConnectionStatus()) {
+                            if(!cv_robotController.getConnectionStatus()) {
+                                Intent lv_intent = new Intent(PollIntent.this, MainActivity.class);
+                                startActivity(lv_intent);
+                            }
+                            else if(cv_robotController.getConnectionStatus()) {
                                 for(int i=0; i<4; i++) {
                                     MyPollData lv_mpd = cv_pollData.get(i);
                                     if(lv_mpd.getActive() == true) {
@@ -205,7 +205,7 @@ public class PollIntent extends AppCompatActivity {
                                         cv_pollData.get(i).setValue(0);
                                     }
                                 }
-//                            }
+                            }
                         }
                     });
                     Thread.sleep(5000);
