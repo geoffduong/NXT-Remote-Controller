@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +44,8 @@ public class PollIntent extends AppCompatActivity {
             R.drawable.nxt_servo_120};
     final int[] changeSensorImages = {R.drawable.nxt_distance_120,R.drawable.nxt_light_120,R.drawable.nxt_touch_120,
             R.drawable.nxt_sound_120};
+    Button resetServos;
+    Button resetSensors;
     //----------------------------------------------------------------------------------------------
 
     @Override
@@ -55,6 +58,40 @@ public class PollIntent extends AppCompatActivity {
 
         //Initalize variables
         bottomBar = (BottomBar) findViewById(R.id.pollBottomBar);
+        resetSensors = (Button) findViewById(R.id.cv_resetSensorsbtn);
+        resetServos = (Button) findViewById(R.id.cv_resetServoBtn);
+
+        resetSensors.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+//                for (int i=0; i< lv_adapter.getCount(); i++ ) {
+//                    lv_pollList.add(new lv_adapter.getItem(int position));
+//                    lv_adapter.getItem(int position);
+                Intent lv_intent = new Intent(PollIntent.this, PollIntent.class);
+                startActivity(lv_intent);
+
+//                }
+                cv_pollAdapter.notifyDataSetChanged();
+
+            }
+        });
+
+        resetServos.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+                for (int i=0; i< cv_pollAdapter.getCount(); i++ ) {
+//                    lv_pollList.add(new lv_adapter.getItem(int position));
+                    Intent lv_intent = new Intent(PollIntent.this, PollIntent.class);
+                    startActivity(lv_intent);
+                }
+                cv_pollAdapter.notifyDataSetChanged();
+
+            }
+        });
 
         //Set default tab
         BottomBarTab pollTab = bottomBar.getTabWithId(R.id.tab_Poll);

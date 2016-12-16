@@ -26,7 +26,31 @@
             android:id="@+id/contentContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/pollBottomBar" />
+            android:layout_above="@+id/pollBottomBar" >
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reset Sensors"
+            android:id="@+id/cv_resetSensorsbtn"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="100dp"
+            android:layout_marginStart="10dp"
+            android:layout_gravity="center_horizontal|bottom" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reset Servos"
+            android:id="@+id/cv_resetServoBtn"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@+id/cv_resetSensorsbtn"
+            android:layout_toEndOf="@+id/cv_resetSensorsbtn"
+            android:layout_marginRight="20dp"
+            android:layout_marginEnd="-140dp"
+            android:layout_gravity="center_horizontal|bottom" />
+        </FrameLayout>
 
         <com.roughike.bottombar.BottomBar
             android:id="@+id/pollBottomBar"

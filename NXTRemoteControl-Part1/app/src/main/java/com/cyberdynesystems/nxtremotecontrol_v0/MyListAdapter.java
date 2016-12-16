@@ -63,7 +63,7 @@ public class MyListAdapter extends BaseAdapter {
         if (convertView == null && layout.equalsIgnoreCase("main")) {
             LayoutInflater mInflater =
                     (LayoutInflater) c2v_context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-            convertView = mInflater.inflate(R.layout.cell, null);
+            convertView = mInflater.inflate(R.layout.device_cell, null);
             TextView lv_tvList = (TextView) convertView.findViewById(R.id.vv_tvList);
             lv_tvList.setText(c2v_listData.get(position).getName().toString());
             TextView lv_tvAddress = (TextView) convertView.findViewById(R.id.vv_tvList);
