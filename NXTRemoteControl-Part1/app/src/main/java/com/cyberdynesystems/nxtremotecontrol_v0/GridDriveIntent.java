@@ -27,6 +27,8 @@ import com.roughike.bottombar.BottomBarTab;
 import com.roughike.bottombar.OnTabSelectListener;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by mlindsa6 on 11/30/16.
@@ -35,6 +37,8 @@ import java.util.ArrayList;
 public class GridDriveIntent extends AppCompatActivity {
 
 
+    private static final int SPEED_OF_TURING = 4;
+    private static final Float SPEED_OF_GOING_FORWARD = (float)4;
     RelativeLayout cv_gridLayout;
     ArrayList<Point> points;
 
@@ -47,6 +51,8 @@ public class GridDriveIntent extends AppCompatActivity {
     BottomBar bottomBar;
 
 
+    Timer cv_timer;
+    MyTimerClass cv_timerTask;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +93,28 @@ public class GridDriveIntent extends AppCompatActivity {
                 if(points.size()<2){
                     return;
                 }
+                double degree = angleBetween(points.get(0),points.get(1),new Point(points.get(0).x + 1, points.get(0).y));
+                cv_timer = new Timer();
+                cv_timerTask = new MyTimerClass(degree);
+                cv_timer.schedule(cv_timerTask,0,cf_degreeToTime(degree));
+                try {
+                    Thread.sleep(100*cf_degreeToTime(degree));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                cv_RobotController.cf_moveMotor(0,0,0);
+                cv_RobotController.cf_moveMotor(1,0,0);
+                cv_timerTask.setLv_Degree(0);
+                cv_timer.schedule(cv_timerTask,0,distanceToTime(distance.get(0)));
+                cv_RobotController.cf_moveMotor(0,0,0);
+                try {
+                    Thread.sleep(100*cf_degreeToTime(degree));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+
+
 
 
             }
@@ -224,6 +252,16 @@ public class GridDriveIntent extends AppCompatActivity {
 
     }
 
+    private long distanceToTime(Float aFloat) {
+        return (long) (SPEED_OF_GOING_FORWARD*aFloat);
+    }
+
+    private long cf_degreeToTime(double degree) {
+        return (long) (SPEED_OF_TURING/360 * degree);
+
+
+    }
+
 
     private double angleBetween(Point center, Point current, Point previous) {
 
@@ -242,7 +280,36 @@ public class GridDriveIntent extends AppCompatActivity {
     }
 
 
+    private class MyTimerClass extends TimerTask {
+        double lv_degree;
+        public MyTimerClass(double degree){
+            super();
+            lv_degree = degree;
 
+        }
+
+        @Override
+        public void run() {
+            if (0 <lv_degree && lv_degree< 180){
+                cv_RobotController.cf_moveMotor(1,5,0x20);
+            }else if(180<=lv_degree && lv_degree<360){
+                cv_RobotController.cf_moveMotor(0,5,0x20);
+            }else if(lv_degree == 0 ){
+                cv_RobotController.cf_moveMotor(0,5,0x20);
+                cv_RobotController.cf_moveMotor(0,5,0x20);
+            }
+
+
+
+
+
+
+
+        }
+        public void setLv_Degree(double degree){
+            this.lv_degree = degree;
+        }
+    }
 }
 
 

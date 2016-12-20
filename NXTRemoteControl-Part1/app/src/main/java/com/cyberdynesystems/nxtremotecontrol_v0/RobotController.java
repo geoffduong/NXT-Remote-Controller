@@ -256,10 +256,7 @@ public class RobotController extends Application {
             buffer[3] = 0x05;		        // set input mode
             buffer[4] = (byte)inputPort;    // input port 0x00-0x03
             buffer[5] = (byte)sensorType;   // sensor type(enumerated)
-            if(sensorType == 0x01)
-                buffer[6] = (byte) 0x40;    // touch sensor mode(enumerated) TRANSITIONCNTMODE
-            else
-                buffer[6] = (byte) 0x80;    // sensor mode(enumerated) PCTFULLSCALEMODE
+            buffer[6] = (byte) 0x80;        // sensor mode(enumerated) PCTFULLSCALEMODE
 
             cv_os.write(buffer);
             cv_os.flush();
@@ -313,22 +310,23 @@ public class RobotController extends Application {
         try {
             byte[] buffer = new byte[5];
 
-            buffer[0] = 0x03;	// length lsb
+            buffer[0] = (byte) (5-2);	// length lsb
             buffer[1] = 0x00;			// length msb
             buffer[2] =  0x00;			// direct command (with response)
             buffer[3] = 0x07;			// get output state
-            buffer[4] = (byte)inputPort;   // input port
+            buffer[4] = (byte)inputPort;           // output port
 
             cv_os.write(buffer);
             cv_os.flush();
 
-            int[] inBuffer = new int[18];
+            int[] inBuffer = new int[16];
             for (int i = 0; i < inBuffer.length; i++) {
                 inBuffer[i] = cv_is.read();
+                System.out.println(inBuffer[i]);
             }
 
-            //index 14 should contain the value we want
-            return inBuffer[14];
+            //index 12 should contain the value we want
+            return inBuffer[12];
             /*
             return package
             byte 0: 0x02
@@ -347,33 +345,6 @@ public class RobotController extends Application {
         }
         catch(Exception e) {
             Log.d("cf_getSensorState", e.getStackTrace().toString());
-        }
-        return 0;
-    }
-
-    public int cf_getOutputValues(int outputPort) {
-        try {
-            byte[] buffer = new byte[5];
-
-            buffer[0] = 0x03;	// length lsb
-            buffer[1] = 0x00;			// length msb
-            buffer[2] =  0x00;			// direct command (with response)
-            buffer[3] = 0x06;			// get output state
-            buffer[4] = (byte)outputPort;   // input port
-
-            cv_os.write(buffer);
-            cv_os.flush();
-
-            int[] inBuffer = new int[27];
-            for (int i = 0; i < inBuffer.length; i++) {
-                inBuffer[i] = cv_is.read();
-                System.out.println(inBuffer[i]);
-            }
-
-            return (inBuffer[19] + inBuffer[20] + inBuffer[21] + inBuffer[22]);
-        }
-        catch(Exception e) {
-
         }
         return 0;
     }
