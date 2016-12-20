@@ -1,5 +1,7 @@
 package com.cyberdynesystems.nxtremotecontrol_v0;
 
+import android.annotation.TargetApi;
+import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
@@ -11,6 +13,7 @@ import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.FloatRange;
 import android.support.annotation.IdRes;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
@@ -37,10 +40,11 @@ import java.util.TimerTask;
 public class GridDriveIntent extends AppCompatActivity {
 
 
-    private static final int SPEED_OF_TURING = 4;
+    private static final Float SPEED_OF_TURING = 10f;
     private static final Float SPEED_OF_GOING_FORWARD = (float)4;
     RelativeLayout cv_gridLayout;
     ArrayList<Point> points;
+    BroadcastReceiver cv_btMonitor;
 
     Button cv_btnRest;
     ArrayList<Float> distance;
@@ -54,14 +58,15 @@ public class GridDriveIntent extends AppCompatActivity {
     Timer cv_timer;
     MyTimerClass cv_timerTask;
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @RequiresApi(api = Build.VERSION_CODES.M)
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.griddriveintent);
-        cv_RobotController = RobotController.getRobotController(this);
+        cv_RobotController = RobotController.getRobotController(GridDriveIntent.this);
         cv_btnRest = (Button) findViewById(R.id.vv_btnResetGrid);
         distance = new ArrayList<>();
-
+        cv_btMonitor = cv_RobotController.cf_getBTMonitor();
         points = new ArrayList<>();
         cv_btnPlayMovment = (Button) findViewById(R.id.vv_btnGridMovement);
 
@@ -89,33 +94,16 @@ public class GridDriveIntent extends AppCompatActivity {
         });
         cv_btnPlayMovment.setOnClickListener(new View.OnClickListener() {
             @Override
+
             public void onClick(View v) {
+
                 if(points.size()<2){
+                    //cv_RobotController.cf_moveMotor(0,50,0x20);
                     return;
                 }
-                double degree = angleBetween(points.get(0),points.get(1),new Point(points.get(0).x + 1, points.get(0).y));
-                cv_timer = new Timer();
-                cv_timerTask = new MyTimerClass(degree);
-                cv_timer.schedule(cv_timerTask,0,cf_degreeToTime(degree));
-                try {
-                    Thread.sleep(100*cf_degreeToTime(degree));
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                cv_RobotController.cf_moveMotor(0,0,0);
-                cv_RobotController.cf_moveMotor(1,0,0);
-                cv_timerTask.setLv_Degree(0);
-                cv_timer.schedule(cv_timerTask,0,distanceToTime(distance.get(0)));
-                cv_RobotController.cf_moveMotor(0,0,0);
-                try {
-                    Thread.sleep(100*cf_degreeToTime(degree));
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
 
-
-
-
+                DriveThread driveThread = new DriveThread("drive");
+                driveThread.start();
 
             }
         });
@@ -123,6 +111,7 @@ public class GridDriveIntent extends AppCompatActivity {
 
         cv_btnRest.setOnClickListener(new View.OnClickListener() {
 
+            @TargetApi(Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
                 points.clear();
@@ -190,17 +179,21 @@ public class GridDriveIntent extends AppCompatActivity {
             }
         });
         cv_gridLayout.setOnTouchListener(new View.OnTouchListener() {
+            @TargetApi(Build.VERSION_CODES.M)
             @Override
             public boolean onTouch(View v, final MotionEvent event) {
 
 
-                if (event.getDownTime() > 5000) {
+                if (event.getActionMasked()== MotionEvent.ACTION_DOWN) {
 
                     cv_gridLayout.setForeground(new Drawable() {
                         @Override
                         public void draw(Canvas canvas) {
                             myPaint.setColor(Color.RED);
-                            points.add(new Point(event.getX(),event.getY()));
+
+                                points.add(new Point(event.getX(),event.getY()));
+
+
 
 
                             for (int i = 0; i < points.size(); i++) {
@@ -219,6 +212,7 @@ public class GridDriveIntent extends AppCompatActivity {
                                     perviosY = points.get(i).y;
 
                                 }
+                                return;
                             }
 
 
@@ -252,20 +246,22 @@ public class GridDriveIntent extends AppCompatActivity {
 
     }
 
-    private long distanceToTime(Float aFloat) {
-        return (long) (SPEED_OF_GOING_FORWARD*aFloat);
-    }
-
-    private long cf_degreeToTime(double degree) {
-        return (long) (SPEED_OF_TURING/360 * degree);
-
+    private float distanceToTime(Float aFloat) {
+        return Math.abs(SPEED_OF_GOING_FORWARD/50f*aFloat);
 
     }
 
+    private float cf_degreeToTime(float degree) {
+        return Math.abs ((360.0f/SPEED_OF_TURING) / degree);
 
-    private double angleBetween(Point center, Point current, Point previous) {
 
-        return Math.toDegrees(Math.atan2(current.x - center.x,current.y - center.y)-
+
+    }
+
+
+    private float angleBetween(Point center, Point current, Point previous) {
+
+        return (float) Math.toDegrees(Math.atan2(current.x - center.x,current.y - center.y)-
                 Math.atan2(previous.x- center.x,previous.y- center.y));
     }
 
@@ -277,26 +273,39 @@ public class GridDriveIntent extends AppCompatActivity {
             this.y = y;
 
         }
+
+        public float getX() {
+            return x;
+        }
+
+        public float getY() {
+            return y;
+        }
     }
 
 
     private class MyTimerClass extends TimerTask {
         double lv_degree;
-        public MyTimerClass(double degree){
+        public MyTimerClass(){
             super();
-            lv_degree = degree;
+
 
         }
 
         @Override
         public void run() {
+            Log.e("MYTIMECLALL","--------------->GOT HERE");
             if (0 <lv_degree && lv_degree< 180){
-                cv_RobotController.cf_moveMotor(1,5,0x20);
+                cv_RobotController.cf_moveMotor(1,50,0x20);
             }else if(180<=lv_degree && lv_degree<360){
-                cv_RobotController.cf_moveMotor(0,5,0x20);
+                cv_RobotController.cf_moveMotor(0,50,0x20);
             }else if(lv_degree == 0 ){
-                cv_RobotController.cf_moveMotor(0,5,0x20);
-                cv_RobotController.cf_moveMotor(0,5,0x20);
+                cv_RobotController.cf_moveMotor(0,50,0x20);
+                cv_RobotController.cf_moveMotor(0,50,0x20);
+            }else if(lv_degree <0){
+                cv_RobotController.cf_moveMotor(0,0,0x20);
+                cv_RobotController.cf_moveMotor(0,0,0x20);
+
             }
 
 
@@ -308,6 +317,93 @@ public class GridDriveIntent extends AppCompatActivity {
         }
         public void setLv_Degree(double degree){
             this.lv_degree = degree;
+        }
+    }
+    class DriveThread implements Runnable {
+        private Thread t;
+        private String threadName;
+        private volatile boolean running;
+
+        public DriveThread(String threadName) {
+            this.threadName = threadName;
+            running = true;
+        }
+
+        public void terminate() {
+            running = false;
+        }
+
+        public void run() {
+            try{
+                cv_RobotController.cf_moveMotor(0,50,0x20);
+                double degree = angleBetween(points.get(0), new Point(points.get(0).x+1, points.get(0).y), points.get(1));
+                Log.e("----------->", "-------------------->" + degree);
+                Log.e("----------->", "-------------------->" + cf_degreeToTime((float)degree));
+                Log.e("----------->", "-------------------->" + (cf_degreeToTime((float)degree)*1000f));
+                //Magic don't change
+                Thread.currentThread().sleep((long)(cf_degreeToTime((float)degree)*1000f));
+                cv_RobotController.cf_moveMotor(0,0,0x00);
+                cv_RobotController.cf_moveMotor(0,0,0x00);
+
+
+                Thread.currentThread().sleep(1000);
+                cv_RobotController.cf_moveMotor(0,50,0x20);
+                cv_RobotController.cf_moveMotor(1,50,0x20);
+                distance.add((float) Math.sqrt(Math.pow(points.get(0).x - points.get(1).x ,2) + Math.pow(points.get(0).y - points.get(1).y,2)));
+                Thread.currentThread().sleep( (long) (distance.get(0)*10f));
+
+                cv_RobotController.cf_moveMotor(1,0,0x00);
+                cv_RobotController.cf_moveMotor(0,0,0x00);
+
+
+                for (int i = 1; i < points.size()-2; i++){
+
+                    cv_RobotController.cf_moveMotor(0,50,0x20);
+
+
+                    degree = angleBetween(points.get(i-1), points.get(i), points.get(i+1));
+                    Log.e("----------->", "-------------------->" + degree);
+                    Log.e("----------->", "-------------------->" + cf_degreeToTime((float)degree));
+                    Log.e("----------->", "-------------------->" + (cf_degreeToTime((float)degree)*1000f));
+                    //Magic don't change
+                    Thread.currentThread().sleep((long)(cf_degreeToTime((float)degree)*1000f));
+                    cv_RobotController.cf_moveMotor(0,0,0x00);
+                    cv_RobotController.cf_moveMotor(0,0,0x00);
+
+
+                    Thread.currentThread().sleep(1000);
+                    cv_RobotController.cf_moveMotor(0,50,0x20);
+                    cv_RobotController.cf_moveMotor(1,50,0x20);
+                    distance.add((float) Math.sqrt(Math.pow(points.get(i-1).x - points.get(i).x ,2) + Math.pow(points.get(i-1).y - points.get(i).y,2)));
+                    Thread.currentThread().sleep( (long) (distance.get(i)*10f));
+
+                    cv_RobotController.cf_moveMotor(1,0,0x00);
+                    cv_RobotController.cf_moveMotor(0,0,0x00);
+
+
+
+
+
+
+
+                }
+
+
+
+            }
+
+
+            catch(InterruptedException e) {
+                System.out.println(e.toString());
+                running = false;
+            }
+        }
+
+        public void start() {
+            if(t == null) {
+                t = new Thread(this, threadName);
+                t.start();
+            }
         }
     }
 }
