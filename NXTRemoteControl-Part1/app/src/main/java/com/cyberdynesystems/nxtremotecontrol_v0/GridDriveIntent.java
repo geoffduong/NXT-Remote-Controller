@@ -339,9 +339,19 @@ public class GridDriveIntent extends AppCompatActivity {
         }
 
         public void run() {
-            try{
-                cv_RobotController.cf_moveMotor(0,50,0x20);
-                double degree = angleBetween(points.get(0), new Point(points.get(0).x+1, points.get(0).y), points.get(1));
+            try {
+                Point aPoint;
+                cv_RobotController.cf_moveMotor(0, 50, 0x20);
+                if (points.get(0).y == points.get(1).y) {
+                    aPoint = new Point(points.get(0).x, points.get(0).y + 1);
+
+                } else{
+
+                    aPoint = new Point(points.get(0).x+1, points.get(0).y);
+
+                }
+
+                double degree = angleBetween(points.get(0), aPoint, points.get(1));
                 Log.e("----------->", "-------------------->" + degree);
                 Log.e("----------->", "-------------------->" + cf_degreeToTime((float)degree));
                 Log.e("----------->", "-------------------->" + (cf_degreeToTime((float)degree)*1000f));
