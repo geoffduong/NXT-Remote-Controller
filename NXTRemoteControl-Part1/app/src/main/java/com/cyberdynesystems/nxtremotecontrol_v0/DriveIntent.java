@@ -64,6 +64,11 @@ public class DriveIntent extends AppCompatActivity implements View.OnClickListen
                     startActivity(lv_intent);
                     overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_left);
                 }
+                if (tabId == R.id.tab_driveByDraw) {
+                    Intent lv_intent = new Intent(DriveIntent.this, GridDriveIntent.class);
+                    startActivity(lv_intent);
+                    overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_left);
+                }
 
             }
         });

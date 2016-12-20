@@ -90,6 +90,11 @@ public class GridDriveIntent extends AppCompatActivity {
                     startActivity(lv_intent);
                     overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_right);
                 }
+                if (tabId == R.id.tab_drive) {
+                    Intent lv_intent = new Intent(GridDriveIntent.this, DriveIntent.class);
+                    startActivity(lv_intent);
+                    overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_right);
+                }
             }
         });
         cv_btnPlayMovment.setOnClickListener(new View.OnClickListener() {
@@ -356,7 +361,7 @@ public class GridDriveIntent extends AppCompatActivity {
                 cv_RobotController.cf_moveMotor(0,0,0x00);
 
 
-                for (int i = 1; i < points.size()-2; i++){
+                for (int i = 1; i <= points.size()-2; i++){
 
                     cv_RobotController.cf_moveMotor(0,50,0x20);
 
