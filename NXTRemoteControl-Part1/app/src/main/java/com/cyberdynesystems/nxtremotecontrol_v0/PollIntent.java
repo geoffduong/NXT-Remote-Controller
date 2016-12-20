@@ -7,15 +7,10 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.BottomBarTab;
@@ -33,23 +28,12 @@ public class PollIntent extends AppCompatActivity {
     RobotController cv_robotController;
     BroadcastReceiver cv_btMonitor;
     BottomBar bottomBar;
-    //MyListAdapter lv_adapter;
-    ArrayList<MyPollData> cv_pollData;
-    ListView cv_pollList;
-    MyPollListAdapter cv_pollAdapter;
-    RobotThread robotThread;
-    int port0, port1, port2, port3;
-    final int[] sensorImages = {R.drawable.nxt_distance_120,R.drawable.nxt_light_120,R.drawable.nxt_touch_120,
-            R.drawable.nxt_sound_120,R.drawable.nxt_servo_120,R.drawable.nxt_servo_120,
-            R.drawable.nxt_servo_120};
-    final int[] changeSensorImages = {R.drawable.nxt_distance_120,R.drawable.nxt_light_120,R.drawable.nxt_touch_120,
-            R.drawable.nxt_sound_120};
-    Button resetServos;
-    Button resetSensors;
+    MyListAdapter lv_adapter;
+    ListView lv_pollList;
     //----------------------------------------------------------------------------------------------
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.poll_intent);
         
@@ -58,40 +42,9 @@ public class PollIntent extends AppCompatActivity {
 
         //Initalize variables
         bottomBar = (BottomBar) findViewById(R.id.pollBottomBar);
-        resetSensors = (Button) findViewById(R.id.cv_resetSensorsbtn);
-        resetServos = (Button) findViewById(R.id.cv_resetServoBtn);
-
-        resetSensors.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-
-//                for (int i=0; i< lv_adapter.getCount(); i++ ) {
-//                    lv_pollList.add(new lv_adapter.getItem(int position));
-//                    lv_adapter.getItem(int position);
-                Intent lv_intent = new Intent(PollIntent.this, PollIntent.class);
-                startActivity(lv_intent);
-
-//                }
-                cv_pollAdapter.notifyDataSetChanged();
-
-            }
-        });
-
-        resetServos.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-
-                for (int i=0; i< cv_pollAdapter.getCount(); i++ ) {
-//                    lv_pollList.add(new lv_adapter.getItem(int position));
-                    Intent lv_intent = new Intent(PollIntent.this, PollIntent.class);
-                    startActivity(lv_intent);
-                }
-                cv_pollAdapter.notifyDataSetChanged();
-
-            }
-        });
+        int[] sensorImages = {R.drawable.nxt_distance_120,R.drawable.nxt_light_120,R.drawable.nxt_touch_120,
+                              R.drawable.nxt_sound_120,R.drawable.nxt_servo_120,R.drawable.nxt_servo_120,
+                              R.drawable.nxt_servo_120};
 
         //Set default tab
         BottomBarTab pollTab = bottomBar.getTabWithId(R.id.tab_Poll);
@@ -119,60 +72,34 @@ public class PollIntent extends AppCompatActivity {
             }
         });
 
-        cv_pollData = new ArrayList<>();
-        for(int i=0; i<sensorImages.length; i++)
-            cv_pollData.add(new MyPollData(sensorImages[i], false));
+        lv_adapter = new MyListAdapter(this, sensorImages, "poll");
 
-        cv_pollAdapter = new MyPollListAdapter(this, cv_pollData);
-        //lv_adapter = new MyListAdapter(this, sensorImages, "poll");
-        cv_pollList = (ListView) findViewById(R.id.poll_listView);
-        cv_pollList.setAdapter(cv_pollAdapter);
+        lv_pollList = (ListView) findViewById(R.id.poll_listView);
 
-        cv_pollList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        lv_pollList.setAdapter(lv_adapter);
+
+        lv_pollList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                final int listPosition = position;
-
                 if (position >= 0 && position <= 3) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(PollIntent.this);
-                    LayoutInflater inflater = getLayoutInflater();
-                    View dialogTitle = inflater.inflate(R.layout.dialog_header, null);
-                    builder.setCustomTitle(dialogTitle);
+                    final Dialog dialog = new Dialog(getApplicationContext());
+                    dialog.setContentView(R.layout.list);
 
-                    ListView modeList = new ListView(PollIntent.this);
-                    final MyListAdapter lv_adapter = new MyListAdapter(PollIntent.this, changeSensorImages, "sensorChange");
-                    modeList.setAdapter(lv_adapter);
+                    ListView lv_listView = (ListView) dialog.findViewById(R.id.vv_listView);
+                    lv_listView.setAdapter(lv_adapter);
 
-                    builder.setView(modeList);
-                    final Dialog dialog = builder.create();
-
-                    modeList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    lv_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            cv_pollData.get(listPosition).setSensorImage(changeSensorImages[position]);
-                            cv_pollAdapter.notifyDataSetChanged();
                             dialog.cancel();
                         }
                     });
+                    dialog.setCancelable(true);
+                    dialog.setTitle("");
                     dialog.show();
-                    dialog.getWindow().setLayout(800, 1030);
                 }
             }
         });
-
-        //cv_robotController.cf_setInputMode();
-        cv_robotController.cf_setInputMode(0x07, 0x01);
-        cv_robotController.cf_setInputMode(0x05, 0x02);
-        cv_robotController.cf_setInputMode(0x01, 0x03);
-
-        port0 = sensorImages[0];
-        port1 = sensorImages[1];
-        port2 = sensorImages[2];
-        port3 = sensorImages[3];
-
-        robotThread = new RobotThread("robotThread");
-        robotThread.start();
     }
     
     @Override
@@ -186,8 +113,7 @@ public class PollIntent extends AppCompatActivity {
     public void onPause() {
         super.onPause();
         unregisterReceiver(cv_btMonitor);
-        cv_robotController.cf_setInputMode(0x06, 0x02);
-        robotThread.terminate();
+        //robotThread.terminate();
     }
 
     class RobotThread implements Runnable {
@@ -215,34 +141,10 @@ public class PollIntent extends AppCompatActivity {
                                 startActivity(lv_intent);
                             }
                             else if(cv_robotController.getConnectionStatus()) {
-                                for(int i=0; i<sensorImages.length; i++) {
-                                    MyPollData lv_mpd = cv_pollData.get(i);
-                                    if(lv_mpd.getActive() == true) {
-                                        switch (lv_mpd.getSensorImage()) {
-                                            case R.drawable.nxt_distance_120:
-                                                lv_mpd.setValue(cv_robotController.cf_getInputValues(0x00));
-                                                break;
-                                            case R.drawable.nxt_sound_120:
-                                                lv_mpd.setValue(cv_robotController.cf_getInputValues(0x01));
-                                                break;
-                                            case R.drawable.nxt_light_120:
-                                                lv_mpd.setValue(cv_robotController.cf_getInputValues(0x02));
-                                                break;
-                                            case R.drawable.nxt_touch_120:
-                                                lv_mpd.setValue(cv_robotController.cf_getInputValues(0x03));
-                                                break;
-                                            case R.drawable.nxt_servo_120:
-                                                lv_mpd.setValue(cv_robotController.cf_getOutputValues(i-4));
-                                                break;
-                                            default:
-                                                break;
-                                        }
-                                        cv_pollAdapter.notifyDataSetChanged();
-                                    }
-                                    else {
-                                        cv_pollData.get(i).setValue(0);
-                                    }
-                                }
+                                cv_robotController.cf_getInputValues(0x00);
+                                cv_robotController.cf_getInputValues(0x01);
+                                cv_robotController.cf_getInputValues(0x02);
+                                cv_robotController.cf_getInputValues(0x03);
                             }
                         }
                     });
